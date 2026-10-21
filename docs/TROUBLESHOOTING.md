@@ -149,10 +149,13 @@ affect push notifications.
 
 Some controls are sized for short English labels. The project filter bar is a
 10 px segmented control; the cache-hit price is a narrow input. Version
-**1.2.1** uses compact Russian labels:
+**1.2.2** uses compact Russian labels:
 
 - filters: `Все`, `В работе`, `Закреп.`, `Архив`;
-- cache-hit price: `Из кэша`.
+- cache-hit price: `Из кэша`;
+- Settings sidebar: `Модели`, `Службы`, `Инструменты`, `Сообщения`;
+- connection test button: `Тест`;
+- inherited model limits: only the value (`1,0M`, `Авто`, `Из настроек`).
 
 If another control still overflows:
 

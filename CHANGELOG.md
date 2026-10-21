@@ -4,6 +4,21 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.2] — 2026-10-21
+
+### Fixed
+
+- More compact labels for narrow settings controls:
+  - sidebar sections: `Модели`, `Службы`, `Инструменты`, `Сообщения`;
+  - connection test button: `Тест` instead of `Проверить подключение`;
+  - inherited model limits show only the value: `{n}`, `{levels}`, `Авто`,
+    `Не задано`, `Из настроек` instead of the `Наследует…` prefix.
+- `translations/ru_overrides.json` now contains 45 targeted corrections.
+
+No CSS or layout files are modified; the fix is in the Russian dictionary.
+
+---
+
 ## [1.2.1] — 2026-10-21
 
 ### Fixed

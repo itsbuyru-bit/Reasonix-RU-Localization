@@ -381,10 +381,14 @@ Russian, or accept English/Chinese notifications.
 
 Some controls were sized for short English labels: the project filter bar is a
 10 px segmented control, and the cache-hit price is a narrow input. Version
-**1.2.1** uses compact labels:
+**1.2.2** uses compact labels:
 
 - project filters: `Все`, `В работе`, `Закреп.`, `Архив`;
-- cache-hit price: `Из кэша`.
+- cache-hit price: `Из кэша`;
+- Settings sidebar: `Модели`, `Службы`, `Инструменты`, `Сообщения`;
+- connection test button: `Тест`;
+- inherited model limits: the field shows only the value (`1,0M`, `Авто`,
+  `Из настроек`) instead of the `Наследует…` prefix.
 
 If another control still overflows:
 
