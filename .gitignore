@@ -1,0 +1,25 @@
+# Generated and local-only
+work/
+sources/
+.reasonix/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Logs and crash dumps
+*.log
+crash/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

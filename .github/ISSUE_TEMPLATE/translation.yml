@@ -1,0 +1,57 @@
+name: Translation correction
+description: Suggest a better Russian translation
+title: "[Translation]: "
+labels: ["translation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for improving the Russian text. Screenshots help a lot.
+        Do not include private code, keys, or session data.
+  - type: input
+    id: screen
+    attributes:
+      label: Where is the string?
+      description: "Screen, dialog, or menu path."
+      placeholder: "Settings → Language"
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Chinese / English source
+      description: If visible in the app or the dictionary.
+      placeholder: "重命名聊天 / Rename chat"
+  - type: input
+    id: current
+    attributes:
+      label: Current Russian text
+      placeholder: "Переименовать чат"
+    validations:
+      required: true
+  - type: input
+    id: suggested
+    attributes:
+      label: Suggested Russian text
+      placeholder: "Переименовать беседу"
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why is the suggestion better?
+      description: Grammar, terminology, context, or consistency with the rest of the UI.
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag images here if useful.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: Every {placeholder} is preserved exactly.
+          required: true
+        - label: I did not include secrets or private data.
+          required: true

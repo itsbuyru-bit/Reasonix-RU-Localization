@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation and troubleshooting
+    url: https://github.com/itsbuyru-bit/Reasonix-RU-Localization#readme
+    about: Read the README and docs/TROUBLESHOOTING.md before opening an issue.
+  - name: Security report
+    url: https://github.com/itsbuyru-bit/Reasonix-RU-Localization/security/advisories/new
+    about: Report security problems privately, not in a public issue.

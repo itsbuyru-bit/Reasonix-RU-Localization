@@ -1,0 +1,77 @@
+name: Bug report
+description: Report a problem with the localization, menu, or patcher
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Please remove API keys, tokens,
+        session data, and private code from everything you paste.
+  - type: input
+    id: reasonix-version
+    attributes:
+      label: Reasonix Studio version
+      description: "About panel, or the version shown by the menu."
+      placeholder: "2.47.1"
+    validations:
+      required: true
+  - type: input
+    id: windows-version
+    attributes:
+      label: Windows version
+      placeholder: "Windows 11 24H2"
+    validations:
+      required: true
+  - type: input
+    id: project-version
+    attributes:
+      label: Localization version
+      description: "Release tag or commit."
+      placeholder: "v1.2.0"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Quit Reasonix Studio
+        2. Run LOCALIZE-RU.bat
+        3. Choose option 1
+        4. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Menu or script output
+      description: Paste the exact output. Remove secrets and private data.
+      render: text
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag images here if the UI is affected.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I completely quit Reasonix Studio before applying the patch.
+          required: true
+        - label: I tried menu option 6 (clear interface cache) if the old UI persisted.
+        - label: I removed API keys, tokens, session data, and private code from this report.
+          required: true

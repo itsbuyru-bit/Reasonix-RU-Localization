@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Tests (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Python syntax
+        run: python -m compileall -q scripts tests
+
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Node syntax
+        run: |
+          node --check scripts/extract_bundle.mjs
+          node --check scripts/verify_bundle.mjs
+          node --check scripts/verify_push_sw.mjs
+          node --check scripts/asar_tool.mjs
+
+      - name: Validate dictionary JSON
+        run: python -m json.tool translations/ru.json > $null
