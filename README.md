@@ -399,6 +399,8 @@ Run the update procedure (menu option 5) to translate them.
 - **Push notification language** follows the browser/OS locale, not the in-app
   selector.
 - **Hosted Web Studio** is out of scope; only the local installation is patched.
+- **Bilingual menu, Russian tool logs:** the menu is English/Russian; low-level
+  diagnostic output from the Python tools is currently in Russian.
 - **Partial dictionaries are safe:** omitted strings fall back to Chinese.
 
 ---
