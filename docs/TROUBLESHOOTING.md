@@ -145,6 +145,26 @@ The service worker cannot read the in-app language. It uses
 Russian, or accept English/Chinese notifications. The in-app selector does not
 affect push notifications.
 
+## Text overlaps or is clipped in narrow controls
+
+Some controls are sized for short English labels. The project filter bar is a
+10 px segmented control; the cache-hit price is a narrow input. Version
+**1.2.1** uses compact Russian labels:
+
+- filters: `Все`, `В работе`, `Закреп.`, `Архив`;
+- cache-hit price: `Из кэша`.
+
+If another control still overflows:
+
+1. add an even shorter value to `translations/ru_overrides.json`;
+2. run `py scripts\merge_parts.py --write`;
+3. re-apply the localization (menu option 1 or 2) and clear the interface cache
+   (option 6).
+
+The app's **Settings → Appearance → Interface size** scales all text, not only
+the overflowing control. A targeted CSS patch is possible but tied to the build;
+open an issue with a screenshot and the affected control.
+
 ## Some strings stay Chinese
 
 A missing key falls back to Chinese by design. The included dictionary is
