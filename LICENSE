@@ -19,10 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-The idea, the extract → translate → inject pipeline, and several patch anchors
-are derived from Reasonix-Traduction-Fr
-(https://github.com/xtrem21-source/Reasonix-Traduction-Fr),
-Copyright (c) 2026 Reasonix-Traduction-Fr contributors, MIT License.
