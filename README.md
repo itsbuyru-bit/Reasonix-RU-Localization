@@ -400,7 +400,10 @@ Some controls were sized for short English labels: the project filter bar is a
 
 - project filters: `Все`, `В работе`, `Закреп.`, `Архив`;
 - cache-hit price: `Из кэша`;
-- Settings sidebar: `Модели`, `Службы`, `Инструменты`, `Сообщения`;
+- Settings sidebar: `Модели`, `Сервисы моделей`, `Инструменты`, `Сообщения`;
+
+`Сервисы моделей` is the full term; a narrow sidebar may ellipsize it. Use
+`Сервисы` as a compact override if you prefer.
 - connection test button: `Тест`;
 - inherited model limits: the field shows only the value (`1,0M`, `Авто`,
   `Из настроек`) instead of the `Наследует…` prefix.

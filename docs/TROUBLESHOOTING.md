@@ -166,7 +166,7 @@ Some controls are sized for short English labels. The project filter bar is a
 
 - filters: `Все`, `В работе`, `Закреп.`, `Архив`;
 - cache-hit price: `Из кэша`;
-- Settings sidebar: `Модели`, `Службы`, `Инструменты`, `Сообщения`;
+- Settings sidebar: `Модели`, `Сервисы моделей`, `Инструменты`, `Сообщения`;
 - connection test button: `Тест`;
 - inherited model limits: only the value (`1,0M`, `Авто`, `Из настроек`).
 
