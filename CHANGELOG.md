@@ -4,6 +4,19 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.3] — 2026-10-22
+
+### Fixed
+
+- Installations under `C:\Program Files` no longer fail with a raw
+  `PermissionError` traceback. The patcher now checks write access before
+  changing anything and prints a clear instruction to run `LOCALIZE-RU.bat` as
+  administrator.
+- The menu warns when Reasonix Studio is installed in a protected folder.
+- No application files are written when the permission check fails.
+
+---
+
 ## [1.2.2] — 2026-10-21
 
 ### Fixed

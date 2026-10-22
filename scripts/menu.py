@@ -42,6 +42,7 @@ STRINGS = {
         "press_enter": "Нажмите Enter, чтобы вернуться в меню...",
         "unknown_version": "неизвестна",
         "tool_note": "Примечание: служебный вывод Python-скриптов остаётся на русском.",
+        "protected": "! Reasonix Studio установлен в защищённую папку. Для пунктов 1, 2 и 4 запустите LOCALIZE-RU.bat от имени администратора.",
         "rebuild_failed": "Перевод завершился с ошибками; повторный запуск досчитает пропуски.",
     },
     "en": {
@@ -72,6 +73,7 @@ STRINGS = {
         "press_enter": "Press Enter to return to the menu...",
         "unknown_version": "unknown",
         "tool_note": "Note: low-level diagnostic output from the Python tools remains in Russian.",
+        "protected": "! Reasonix Studio is installed in a protected folder. For options 1, 2 and 4, run LOCALIZE-RU.bat as administrator.",
         "rebuild_failed": "The translation finished with errors; run it again to retry the missing strings.",
     },
 }
@@ -189,6 +191,8 @@ def main():
     try:
         common.log("%s: %s" % (msg("install"), paths.app_dir()))
         common.log("%s:    %s" % (msg("version"), paths.app_version() or msg("unknown_version")))
+        if not common.is_admin() and not common.can_write_dir(paths.app_assets()):
+            common.log(msg("protected"))
     except SystemExit as error:
         common.log(str(error))
         return 1

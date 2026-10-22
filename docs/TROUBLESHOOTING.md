@@ -71,6 +71,19 @@ Reasonix Studio is still running, or a background process holds the file.
 
 The error message names the locked file. Do not delete `app.asar` manually.
 
+## Permission denied / the app is in Program Files
+
+If Reasonix Studio is installed under `C:\Program Files`, a normal user cannot
+write to `resources\...`. The patcher stops before changing anything and prints
+the folder name.
+
+1. Quit Reasonix Studio completely.
+2. Right-click `LOCALIZE-RU.bat` and choose **Run as administrator**.
+3. Choose option 1 or 2.
+
+The cache reset (option 6) does not need administrator rights. Installing
+Reasonix Studio outside `Program Files` also avoids the problem.
+
 ## Python is not found
 
 - Install Python 3.8 or newer from python.org and enable “Add Python to PATH”.

@@ -12,6 +12,18 @@ import paths  # noqa: E402
 
 
 class TestCommon(unittest.TestCase):
+    def test_can_write_dir(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertTrue(common.can_write_dir(tmp))
+            self.assertFalse(common.can_write_dir(os.path.join(tmp, "missing")))
+
+    def test_permission_hint(self):
+        hint = common.permission_hint(r"C:\Program Files\Reasonix Studio")
+        self.assertIn("администратора", hint)
+        self.assertIn("Program Files", hint)
+
     def test_placeholders_ok(self):
         self.assertEqual(common.placeholder_problems("Привет, {name}!", "Привет, {name}!"), [])
 

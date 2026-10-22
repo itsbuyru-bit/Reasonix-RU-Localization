@@ -126,7 +126,9 @@ committed to this repository.
 ## Quick start
 
 1. **Quit Reasonix Studio completely** — including the tray icon → **Quit**.
-2. Run **`LOCALIZE-RU.bat`** from this folder.
+2. Run **`LOCALIZE-RU.bat`** from this folder. If Reasonix Studio is installed
+   under `C:\Program Files`, right-click the launcher and choose **Run as
+   administrator**.
 3. Choose the menu language:
    - `1` — Русский (default, press Enter)
    - `2` — English
@@ -333,6 +335,19 @@ If you are upgrading from an older copy:
 
 Reasonix Studio is still running. Quit it completely, including the tray icon,
 then retry option 1 or 4. The error message names the locked file.
+
+### Permission denied / the app is in Program Files
+
+If Reasonix Studio is installed under `C:\Program Files`, a normal user cannot
+write to `resources\...`. The patcher stops before changing anything and prints
+the folder name.
+
+1. Quit Reasonix Studio completely.
+2. Right-click `LOCALIZE-RU.bat` and choose **Run as administrator**.
+3. Choose option 1 or 2.
+
+The cache reset (option 6) does not need administrator rights. Installing
+Reasonix Studio outside `Program Files` also avoids the problem.
 
 ### Python or Node is not found
 

@@ -86,3 +86,36 @@ def short(text, n=60):
 
 def log(msg=""):
     print(msg, flush=True)
+
+
+def can_write_dir(path):
+    """Проверяет, можно ли создать файл в каталоге (а не только прочитать его)."""
+    import tempfile
+
+    try:
+        with tempfile.NamedTemporaryFile(dir=path, prefix=".rx-ru-", delete=True):
+            return True
+    except OSError:
+        return False
+
+
+def is_admin():
+    """Запущен ли процесс с правами администратора (Windows)."""
+    if os.name != "nt":
+        return True
+    try:
+        import ctypes
+
+        return bool(ctypes.windll.shell32.IsUserAnAdmin())
+    except Exception:
+        return True
+
+
+def permission_hint(folder):
+    return (
+        "Недостаточно прав для записи в:\n  %s\n\n"
+        "Reasonix Studio установлен в защищённую папку (например, Program Files).\n"
+        "Полностью закройте Studio и запустите LOCALIZE-RU.bat от имени администратора:\n"
+        "правый клик по файлу → «Запуск от имени администратора».\n\n"
+        "Файлы приложения не изменены." % folder
+    )

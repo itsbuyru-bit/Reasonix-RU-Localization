@@ -137,6 +137,9 @@ def backup_asar():
 def restore():
     if paths.app_running():
         raise SystemExit("Закройте Reasonix Studio полностью, затем повторите --restore.")
+    target_dir = os.path.dirname(paths.app_asar())
+    if not common.can_write_dir(target_dir):
+        raise SystemExit(common.permission_hint(target_dir))
     files = sorted(glob.glob(os.path.join(paths.BACKUP, "*__app.asar")), key=os.path.getmtime, reverse=True)
     if not files:
         raise SystemExit("Резервных копий app.asar нет: " + paths.BACKUP)
@@ -151,6 +154,9 @@ def install(packed):
             "Reasonix Studio запущен. Закройте его полностью (включая значок в трее), "
             "затем повторите --install."
         )
+    target_dir = os.path.dirname(paths.app_asar())
+    if not common.can_write_dir(target_dir):
+        raise SystemExit(common.permission_hint(target_dir))
     backup = backup_asar()
     staged = paths.app_asar() + ".ru-new"
     shutil.copy2(packed, staged)

@@ -124,9 +124,16 @@ def backup(path, tag):
 
 def write_atomic(path, text):
     tmp = path + ".ru-tmp"
-    with open(tmp, "w", encoding="utf-8", newline="") as f:
-        f.write(text)
-    os.replace(tmp, path)
+    try:
+        with open(tmp, "w", encoding="utf-8", newline="") as f:
+            f.write(text)
+        os.replace(tmp, path)
+    except PermissionError:
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+        raise SystemExit(common.permission_hint(os.path.dirname(path)))
 
 
 def read(path):
@@ -257,6 +264,9 @@ def restore():
     folder = os.path.join(BACKUP_ROOT, str(version))
     if not os.path.isdir(folder):
         raise SystemExit("Резервных копий для версии %s нет: %s" % (version, folder))
+    for target_dir in (paths.app_assets(), paths.app_dist()):
+        if not common.can_write_dir(target_dir):
+            raise SystemExit(common.permission_hint(target_dir))
     restored = []
     for file in sorted(glob.glob(os.path.join(folder, "*"))):
         name = os.path.basename(file)
@@ -322,6 +332,12 @@ def main():
     settings = paths.settings_bundle()
     index = os.path.join(paths.app_dist(), "index.html")
     push = os.path.join(paths.app_dist(), "push-sw.js")
+
+    if not args.dry_run:
+        for target in (i18n, settings, index, push):
+            folder = os.path.dirname(target)
+            if not common.can_write_dir(folder):
+                raise SystemExit(common.permission_hint(folder))
 
     common.log("\n== i18n: %s" % os.path.basename(i18n))
     new_i18n, changes_i18n = patch_i18n(i18n, dictionary, args.dry_run)
