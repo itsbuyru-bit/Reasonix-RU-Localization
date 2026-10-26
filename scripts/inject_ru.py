@@ -70,7 +70,7 @@ function describe(data) {
   const language = pickLanguage();"""
 
 
-def patches():
+def patches_247():
     return [
         (
             "R1_translate",
@@ -102,6 +102,57 @@ def patches():
             f"return T(L)?{BT}zh{BT}:L.toLowerCase().startsWith({BT}{LANG}{BT})?{BT}{LANG}{BT}:{BT}en{BT}}}",
         ),
     ]
+
+
+def patches_252():
+    return [
+        (
+            "R1_translate",
+            "function A(e,t){let n=S[e]??e;",
+            f"function A(e,t){{let n=(x==={BT}{LANG}{BT}?globalThis.{GLOBAL}?.[e]:void 0)??S[e]??e;",
+        ),
+        (
+            "R2_resolve",
+            f"return t==={BT}zh{BT}||t==={BT}en{BT}?t:E()",
+            f"return t==={BT}zh{BT}||t==={BT}en{BT}||t==={BT}{LANG}{BT}?t:E()",
+        ),
+        (
+            "R3_lang",
+            f"document.documentElement.lang=x==={BT}zh{BT}?{BT}zh-CN{BT}:{BT}en{BT}",
+            f"document.documentElement.lang=x==={BT}zh{BT}?{BT}zh-CN{BT}:"
+            f"x==={BT}{LANG}{BT}?{BT}{LANG}{BT}:{BT}en{BT}",
+        ),
+        (
+            "R4_adopt",
+            f"function k(e){{let t=(e??{BT}{BT}).trim().toLowerCase(),n=localStorage.getItem(C);",
+            f"function k(e){{if((localStorage.getItem(C)||{BT}{BT}).trim().toLowerCase()==={BT}{LANG}{BT})"
+            f"return !1;let t=(e??{BT}{BT}).trim().toLowerCase(),n=localStorage.getItem(C);",
+        ),
+        (
+            "R5_machine",
+            f"function E(){{return D(navigator.languages?.[0]??navigator.language??{BT}{BT})"
+            f"?{BT}zh{BT}:{BT}en{BT}}}",
+            f"function E(){{let L=navigator.languages?.[0]??navigator.language??{BT}{BT};"
+            f"return D(L)?{BT}zh{BT}:L.toLowerCase().startsWith({BT}{LANG}{BT})?{BT}{LANG}{BT}:{BT}en{BT}}}",
+        ),
+    ]
+
+
+def patches():
+    """Совместимость: якоря 2.47.x."""
+    return patches_247()
+
+
+def detect_i18n(text):
+    """Возвращает (переменная словаря, набор якорей) для известной версии бандла."""
+    if "b={zh:{},en:" in text:
+        return "b", patches_252()
+    if "v={zh:" in text:
+        return "v", patches_247()
+    raise SystemExit(
+        "Не удалось определить структуру словаря i18n. "
+        "Откройте issue с версией Reasonix Studio и именем бандла."
+    )
 
 
 def push_patches():
@@ -157,16 +208,24 @@ def apply_replacements(text, reps, dry):
 def patch_i18n(path, dictionary, dry):
     text = read(path)
     payload = json.dumps(dictionary, ensure_ascii=False, separators=(",", ":"))
+    dict_var, reps = detect_i18n(text)
 
     if ";globalThis.%s=" % GLOBAL in text:
         if dry:
             common.log("  словарь уже есть; dry-run: обновление не записано (%d строк)" % len(dictionary))
             return text, ["dictionary_update"]
         pattern = re.compile(
-            r";globalThis\.%s=\{.*?\};v\.%s=globalThis\.%s;" % (GLOBAL, LANG, GLOBAL),
+            r";globalThis\.%s=\{.*?\};%s\.%s=globalThis\.%s;"
+            % (GLOBAL, dict_var, LANG, GLOBAL),
             re.S,
         )
-        new_block = ";globalThis.%s=%s;v.%s=globalThis.%s;" % (GLOBAL, payload, LANG, GLOBAL)
+        new_block = ";globalThis.%s=%s;%s.%s=globalThis.%s;" % (
+            GLOBAL,
+            payload,
+            dict_var,
+            LANG,
+            GLOBAL,
+        )
         if not pattern.search(text):
             raise SystemExit("Найден маркер __RU, но блок словаря не читается. Восстановите файл из backup.")
         text = pattern.sub(lambda _m: new_block, text, count=1)
@@ -180,10 +239,16 @@ def patch_i18n(path, dictionary, dry):
         )
 
     orig = text
-    text, changed = apply_replacements(text, patches(), dry)
-    if len(changed) != len(patches()):
+    text, changed = apply_replacements(text, reps, dry)
+    if len(changed) != len(reps):
         raise SystemExit("Не все якоря i18n совпали — файл не изменён.")
-    text = text + "\n;globalThis.%s=%s;v.%s=globalThis.%s;\n" % (GLOBAL, payload, LANG, GLOBAL)
+    text = text + "\n;globalThis.%s=%s;%s.%s=globalThis.%s;\n" % (
+        GLOBAL,
+        payload,
+        dict_var,
+        LANG,
+        GLOBAL,
+    )
     common.log("  ok R6_dictionary (%d строк)" % len(dictionary))
     changed.append("R6_dictionary")
     if dry:
@@ -311,7 +376,7 @@ def main():
     version = paths.app_version() or "unknown"
     common.log("Reasonix Studio: %s" % paths.app_dir())
     common.log("Версия: %s" % version)
-    if not str(version).startswith("2.47"):
+    if not (str(version).startswith("2.47") or str(version).startswith("2.52")):
         common.log(
             "! Версия %s не проверялась. Якоря будут проверены; "
             "при несовпадении скрипт остановится." % version
@@ -387,7 +452,7 @@ def main():
     installed = read(i18n)
     checks = {
         "словарь __RU": ";globalThis.%s=" % GLOBAL in installed,
-        "v.ru": "v.%s=globalThis.%s" % (LANG, GLOBAL) in installed,
+        "словарь ru": (".%s=globalThis.%s" % (LANG, GLOBAL)) in installed,
         "пункт в Settings": ("%s%s%s,%s%s%s" % (BT, LANG, BT, BT, DISPLAY, BT)) in read(settings),
         "язык index.html": 'p === "ru"' in read(index),
         "push-уведомления": "ru: {" in read(push) and "pickLanguage" in read(push),

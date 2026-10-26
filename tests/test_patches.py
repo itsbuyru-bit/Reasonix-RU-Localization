@@ -28,6 +28,18 @@ class TestWebPatches(unittest.TestCase):
         self.assertIn("R5_machine", names)
 
 
+class TestWebPatches252(unittest.TestCase):
+    def test_252_replacements_change_text(self):
+        for name, old, new in inject_ru.patches_252():
+            self.assertNotEqual(old, new, name)
+            self.assertIn("ru", new, name)
+            self.assertNotIn("ru", old, name)
+
+    def test_detect_i18n_layout(self):
+        self.assertEqual(inject_ru.detect_i18n("var b={zh:{},en:{}};")[0], "b")
+        self.assertEqual(inject_ru.detect_i18n("var v={zh:{},en:{}};")[0], "v")
+
+
 class TestNativePatches(unittest.TestCase):
     def test_files_unique(self):
         files = [item["file"] for item in native_strings.PATCHES]

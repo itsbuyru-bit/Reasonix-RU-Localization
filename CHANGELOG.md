@@ -4,6 +4,27 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-10-26
+
+### Added
+
+- **Reasonix Studio 2.52.0 support**: new web bundles
+  `i18n-DunoFOkp.js` and `Settings-Bj8eAezi.js`. The web injector now recognizes
+  both bundle layouts (2.47.x variable names `v/y/b/O/C/w/D` and 2.52.x names
+  `b/x/S/A/T/E/k`).
+- **231 new strings translated**; the dictionary now contains **5,188**
+  strings (2.52.0).
+- The bundle extractor supports both `v` and `b` dictionary variables and
+  strips the `export` statement wherever it appears.
+
+### Verified
+
+- All native `app.asar` anchors still match 2.52.0.
+- `Settings`, `index.html` and `push-sw.js` anchors are unchanged.
+- 2.47.x remains supported; the old anchors are kept as a fallback.
+
+---
+
 ## [1.2.4] — 2026-10-22
 
 ### Changed

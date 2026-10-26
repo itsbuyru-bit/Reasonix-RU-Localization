@@ -3,7 +3,7 @@
 Патчит только копию: исходный app.asar не меняется, пока не указан --install.
 
 Что переводится: экран запуска, контекстное меню, диалоги ошибок, диалог
-старой версии и меню в трее. Якоря проверены на 2.47.1.
+старой версии и меню в трее. Якоря проверены на 2.47.1 и 2.52.0.
 
 Примеры:
   py scripts/vendor_asar.py
@@ -193,7 +193,7 @@ def main():
     version = paths.app_version() or "unknown"
     common.log("Reasonix Studio: %s" % paths.app_dir())
     common.log("Версия: %s" % version)
-    if not str(version).startswith("2.47"):
+    if not (str(version).startswith("2.47") or str(version).startswith("2.52")):
         common.log(
             "! Версия %s не проверялась. Якоря будут проверены; "
             "при несовпадении скрипт остановится." % version

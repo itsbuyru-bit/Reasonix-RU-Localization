@@ -28,22 +28,32 @@ files, patch copies, validate them, and write them back with backups.
 
 The minified `i18n-*.js` bundle contains a dictionary similar to:
 
+In 2.47.x the dictionary variable is `v`; in 2.52.x it is `b`:
+
 ```js
-var v = { zh: {}, en: { ... } };
+var v = { zh: {}, en: { ... } };   // 2.47.x
+var b = { zh: {}, en: { ... } };   // 2.52.x
 ```
 
 The **key** is the Chinese source string. The **value** is the translation.
 Chinese itself is the fallback: a missing key renders the key. English is a
 separate map.
 
-The bundle also contains the current language variable (`y` in 2.47.1), the
-active dictionary (`b`), the localStorage key (`x = "rx-lang"`), and helpers:
+The minified helper names differ between builds:
 
-- `S()` initializes the language and sets `document.documentElement.lang`;
-- `C()` resolves a language code (`zh`/`en` only originally);
-- `w()` detects the machine language;
-- `D()` adopts a language and reloads;
-- `O()` translates a key, substituting `{placeholders}`.
+| Role | 2.47.x | 2.52.x |
+|---|---|---|
+| dictionary | `v` | `b` |
+| active dictionary | `b` | `S` |
+| current language | `y` | `x` |
+| language resolver | `C` | `T` |
+| machine detector | `w` | `E` |
+| language adoption | `D` | `k` |
+| translate function | `O` | `A` |
+| localStorage key | `x` | `C` |
+
+`inject_ru.py` detects the layout from the dictionary declaration and selects
+`patches_247()` or `patches_252()`.
 
 ### Injected changes
 
@@ -51,12 +61,12 @@ active dictionary (`b`), the localStorage key (`x = "rx-lang"`), and helpers:
 
 | Tag | Effect |
 |---|---|
-| `R1_translate` | `O()` consults `globalThis.__RU` when the language is `ru` |
-| `R2_resolve` | `C()` accepts `ru` |
+| `R1_translate` | The translate function (`O`/`A`) consults `globalThis.__RU` when the language is `ru` |
+| `R2_resolve` | The resolver (`C`/`T`) accepts `ru` |
 | `R3_lang` | `<html lang>` becomes `ru` |
 | `R4_adopt` | An explicit `ru` choice is not overwritten by auto-detection |
 | `R5_machine` | A Russian machine locale resolves to `ru` |
-| `R6_dictionary` | Appends `globalThis.__RU = {...}; v.ru = globalThis.__RU` |
+| `R6_dictionary` | Appends `globalThis.__RU = {...}; v.ru`/`b.ru = globalThis.__RU` |
 | `R7_settings` | Adds `` [`ru`,`Русский`] `` to the Settings language array |
 | `R8_index` | Sets the boot page language to `ru` |
 | `P1_ru_text` | Adds Russian notification texts to `push-sw.js` |
@@ -147,7 +157,7 @@ work/backup/<version>/
 
 ## Version and anchors
 
-The scripts target Reasonix Studio 2.47.x. A different version is **not**
+The scripts target Reasonix Studio 2.47.x and 2.52.x. A different version is **not**
 rejected by number. Instead:
 
 1. the script prints a warning;

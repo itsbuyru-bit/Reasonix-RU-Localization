@@ -13,6 +13,7 @@
 import argparse
 import hashlib
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -83,11 +84,16 @@ def main():
 
     dist = os.path.join(test_app, "resources", "frontend-next", "dist")
     assets = os.path.join(dist, "assets")
-    bundles = [name for name in os.listdir(assets) if name.startswith("i18n-")]
-    if len(bundles) != 1:
-        raise SystemExit("ожидался один i18n-бандл, найдено: %s" % bundles)
-    settings = [name for name in os.listdir(assets)
-                if name.startswith("Settings-") and name.endswith(".js")][0]
+    index_html = open(os.path.join(dist, "index.html"), encoding="utf-8").read()
+    match = re.search(r"/(i18n-[A-Za-z0-9_\-]+\.js)", index_html)
+    if not match:
+        raise SystemExit("в index.html не найден бандл i18n")
+    bundles = [match.group(1)]
+    settings = max(
+        [name for name in os.listdir(assets)
+         if name.startswith("Settings-") and name.endswith(".js")],
+        key=lambda name: os.path.getmtime(os.path.join(assets, name)),
+    )
 
     originals = {
         "i18n": os.path.join(assets, bundles[0]),
