@@ -190,7 +190,7 @@ profile’s `native` fields and run `build_native_patches.py --lang de-DE` again
 - The menu UI itself is Russian/English; the selected language pack is
   independent from the menu language.
 - `en` and `zh` are built into Reasonix and are not patched by this tool.
-- `translations/ru.json` and `translations/_template.json` remain as legacy
+- `locale/ru-RU.json` and `translations/_template.json` remain as legacy
   copies; new profiles use `locale/`.
 
 ## File map
@@ -221,7 +221,7 @@ scripts/
 
 1. Run the local checks:
    ```bat
-   python scriptsalidate_language_pack.py --lang de-DE
+   python scripts\validate_language_pack.py --lang de-DE
    python scripts\check_docs.py
    python -m unittest discover -s tests
    ```
@@ -235,3 +235,21 @@ scripts/
 checks pass. Enable repository auto-merge and apply the `automerge` label to a
 trusted PR; the `Auto-merge` workflow only *enables* GitHub auto-merge and never
 bypasses CI or branch protection. Do not label untrusted or unreviewed PRs.
+
+### Git commands for the PR
+
+```bat
+gh repo fork itsbuyru-bit/Reasonix-RU-Localization --clone
+cd Reasonix-RU-Localization
+git switch -c translation/de-DE
+:: add languages/de-DE.json and locale/de-DE.json, then validate
+git add languages\de-DE.json locale\de-DE.json locale\de-DE.overrides.json
+git commit -m "translation: add German (de-DE)"
+git push -u origin translation/de-DE
+gh pr create --base main --head <your-user>:translation/de-DE ^
+  --title "translation: add German (de-DE)" ^
+  --body "Adds the BCP 47 de-DE language pack."
+```
+
+Add the `translation` label. A maintainer may add `automerge` after review;
+GitHub then merges only after the required `Tests (Windows)` check.

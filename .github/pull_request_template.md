@@ -25,9 +25,9 @@ Add before/after screenshots for visible UI changes.
 ## Language pack (if applicable)
 
 - [ ] `languages/<code>.json` and `locale/<code>.json` are added (BCP 47, e.g. `de-DE`).
-- [ ] `python scriptsalidate_language_pack.py --lang <code>` passes.
+- [ ] `python scripts\validate_language_pack.py --lang <code>` passes.
 - [ ] `python scripts\check_docs.py` passes.
-- [ ] `python scriptsuild_native_patches.py --lang <code>` was run, or `native` fields are complete.
+- [ ] `python scripts\build_native_patches.py --lang <code>` was run, or `native` fields are complete.
 - [ ] Placeholders, native/push strings and `base`/`aliases` are filled.
 
 ## Checklist

@@ -4,6 +4,20 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [2.2.1] — 2026-10-27
+
+### Fixed
+
+- Corrected corrupted command paths in `CONTRIBUTING.md`, the PR template and
+  `docs/ADDING-A-LANGUAGE.md` (`\validate`, `\build_native`).
+- Added complete fork → branch → validate → commit → push → `gh pr create`
+  instructions for language packs.
+- `merge_parts.py` now preserves the existing dictionary when only
+  `locale/ru-RU.overrides.json` is edited, so a single translation correction can
+  be regenerated with `--lang ru-RU --write`.
+
+---
+
 ## [2.2.0] — 2026-10-27
 
 ### Added

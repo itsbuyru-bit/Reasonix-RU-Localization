@@ -67,6 +67,9 @@ def main(argv=None):
     overrides = common.read_json(OVERRIDES, {})
     if not isinstance(overrides, dict):
         overrides = {}
+    existing = common.read_json(DICTIONARY, {})
+    if not isinstance(existing, dict):
+        existing = {}
     result = {}
     missing = []
     for row in rows:
@@ -77,6 +80,8 @@ def main(argv=None):
             result[zh] = zh
         elif parts.get(zh, "").strip():
             result[zh] = parts[zh]
+        elif isinstance(existing.get(zh), str) and existing[zh].strip():
+            result[zh] = existing[zh]
         else:
             missing.append(row)
 
