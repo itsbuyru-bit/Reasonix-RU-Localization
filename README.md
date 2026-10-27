@@ -146,12 +146,13 @@ list, or the old list still appears, see
 
 If you do not want to touch `app.asar`:
 
-1. Run `LOCALIZE-RU.bat`.
-2. Choose **2 — Web interface only**.
-3. Restart Reasonix Studio (or reload the window) and select **Русский**.
+1. Quit Reasonix Studio completely, including the tray icon.
+2. Run `LOCALIZE-RU.bat`.
+3. Choose **2 — Web interface only**.
+4. Start Reasonix Studio and select **Русский**.
 
-This works even while Reasonix Studio is running; the changes apply after the
-window reloads.
+The menu checks for a running Studio at startup and will not open until it is
+closed.
 
 ### English menu shortcut
 
@@ -175,8 +176,9 @@ Use `--ru` to skip the language prompt and open the Russian menu directly.
 | **6** | Clear the Chromium interface cache (if old settings still appear) |
 | **7** | Exit |
 
-Option 1 and option 4 require Reasonix Studio to be fully closed. Option 2 can
-run while the app is open, but a restart is needed to see the result.
+The menu checks for a running Reasonix Studio at startup and waits until it is
+closed (enter `0` to exit). For read-only checks, run
+`py scripts\verify_web.py` directly.
 
 ---
 

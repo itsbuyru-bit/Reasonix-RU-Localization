@@ -4,6 +4,22 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.3.2] — 2026-10-27
+
+### Changed
+
+- The menu checks at startup whether Reasonix Studio is running and waits until
+  it is closed (enter `0` to exit). This prevents applying files to a live
+  installation.
+- `inject_ru.py` refuses to write while Reasonix Studio is running unless
+  `--allow-running` is passed. The flag is reserved for tests and copies; normal
+  use should close the app.
+- `verify_web.py` passes `--allow-running` for its copy-only test.
+- The README no longer claims that the web-only mode can be applied while the
+  app is open.
+
+---
+
 ## [1.3.1] — 2026-10-27
 
 ### Added

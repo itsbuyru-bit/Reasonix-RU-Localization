@@ -132,7 +132,8 @@ def main():
     common.log("\n== инъекция в копию")
     run(
         [sys.executable, os.path.join(paths.SCRIPTS, "inject_ru.py"),
-         "--app", test_app, "--dict", dictionary, "--backup-dir", test_backup]
+         "--app", test_app, "--dict", dictionary, "--backup-dir", test_backup,
+         "--allow-running"]
     )
 
     bundle = originals["i18n"]
@@ -175,7 +176,8 @@ def main():
         common.log("  OK резервные копии совпадают с исходными файлами")
 
         run([sys.executable, os.path.join(paths.SCRIPTS, "inject_ru.py"),
-             "--app", test_app, "--restore", "--backup-dir", test_backup])
+             "--app", test_app, "--restore", "--backup-dir", test_backup,
+             "--allow-running"])
         for tag, target in originals.items():
             if digest(target) != original_hashes[tag]:
                 raise SystemExit("откат не восстановил %s" % tag)

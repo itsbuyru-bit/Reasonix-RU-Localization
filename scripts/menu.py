@@ -35,6 +35,9 @@ STRINGS = {
         "dict_lines": "Словарь: %d строк",
         "running": "Reasonix Studio запущен.",
         "running_hint": "Полностью закройте его (включая значок в трее) и повторите.",
+        "running_gate": "Reasonix Studio запущен.",
+        "running_gate_hint": "Полностью закройте его (включая значок в трее), чтобы применить перевод.",
+        "gate_choice": "Закройте Studio и нажмите Enter (0 — выход): ",
         "running_web": "Reasonix Studio запущен: изменения применятся после перезапуска.",
         "done": "Готово.",
         "restart": "Перезапустите Reasonix Studio и выберите: Настройки → Язык → Русский",
@@ -66,6 +69,9 @@ STRINGS = {
         "dict_lines": "Dictionary: %d strings",
         "running": "Reasonix Studio is running.",
         "running_hint": "Quit it completely (including the tray icon) and try again.",
+        "running_gate": "Reasonix Studio is running.",
+        "running_gate_hint": "Quit it completely (including the tray icon) before applying the localization.",
+        "gate_choice": "Quit Studio and press Enter (0 to exit): ",
         "running_web": "Reasonix Studio is running: changes apply after a restart.",
         "done": "Done.",
         "restart": "Restart Reasonix Studio and choose: Settings → Language → Русский",
@@ -117,6 +123,19 @@ def dictionary_ready():
         common.log(msg("no_dict_hint"))
         return False
     common.log(msg("dict_lines", len(data)))
+    return True
+
+
+def ensure_closed_at_start():
+    while paths.app_running():
+        common.log(msg("running_gate"))
+        common.log(msg("running_gate_hint"))
+        try:
+            answer = input(msg("gate_choice")).strip()
+        except (EOFError, KeyboardInterrupt):
+            return False
+        if answer == "0":
+            return False
     return True
 
 
@@ -197,6 +216,9 @@ def main():
         common.log(str(error))
         return 1
     common.log("%s:   %s" % (msg("dictionary"), paths.RU_DICT))
+
+    if not ensure_closed_at_start():
+        return 0
 
     while True:
         common.log("")

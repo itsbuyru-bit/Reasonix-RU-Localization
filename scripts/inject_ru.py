@@ -324,6 +324,16 @@ def patch_push_sw(path, dry):
     return text, True
 
 
+def require_closed(allow_running=False):
+    if paths.app_running() and not allow_running:
+        raise SystemExit(
+            "Reasonix Studio запущен. Полностью закройте его (включая значок в трее) "
+            "и повторите.\n"
+            "Для записи в веб-часть при запущенном приложении (не рекомендуется) "
+            "добавьте --allow-running."
+        )
+
+
 def restore():
     version = paths.app_version() or "unknown"
     folder = os.path.join(BACKUP_ROOT, str(version))
@@ -358,6 +368,8 @@ def main():
     parser.add_argument("--backup-dir", help="каталог резервных копий (для тестов)")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--restore", action="store_true")
+    parser.add_argument("--allow-running", action="store_true",
+                        help="разрешить запись при запущенном Studio (не рекомендуется)")
     parser.add_argument("--allow-version-mismatch", action="store_true")
     args = parser.parse_args()
 
@@ -369,6 +381,7 @@ def main():
         os.environ["REASONIX_STUDIO_DIR"] = os.path.abspath(args.app)
 
     if args.restore:
+        require_closed(args.allow_running)
         restore()
         return
 
@@ -382,7 +395,12 @@ def main():
             "при несовпадении скрипт остановится." % version
         )
     if paths.app_running():
-        common.log("! Reasonix Studio запущен: изменения применятся после перезапуска.")
+        if args.dry_run:
+            common.log("! Reasonix Studio запущен: dry-run только проверяет якоря, файлы не меняются.")
+        elif args.allow_running:
+            common.log("! Reasonix Studio запущен: запись разрешена --allow-running; перезапустите окно.")
+        else:
+            require_closed(False)
 
     dictionary = common.read_json(args.dict, {})
     if not dictionary:

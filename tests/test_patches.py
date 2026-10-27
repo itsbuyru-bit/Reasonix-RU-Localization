@@ -40,6 +40,22 @@ class TestWebPatches252(unittest.TestCase):
         self.assertEqual(inject_ru.detect_i18n("var v={zh:{},en:{}};")[0], "v")
 
 
+class TestRunningGate(unittest.TestCase):
+    def test_require_closed_refuses_while_running(self):
+        from unittest.mock import patch
+
+        with patch.object(inject_ru.paths, "app_running", return_value=True):
+            with self.assertRaises(SystemExit):
+                inject_ru.require_closed(False)
+            inject_ru.require_closed(True)
+
+    def test_require_closed_allows_when_stopped(self):
+        from unittest.mock import patch
+
+        with patch.object(inject_ru.paths, "app_running", return_value=False):
+            inject_ru.require_closed(False)
+
+
 class TestNativePatches(unittest.TestCase):
     def test_files_unique(self):
         files = [item["file"] for item in native_strings.PATCHES]
