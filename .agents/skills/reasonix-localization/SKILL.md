@@ -1,14 +1,16 @@
 ---
-name: reasonix-ru-localization
-description: Work with the Reasonix RU localization repo: BCP 47 language packs, Russian overrides, native patches, tests, and PRs.
+name: reasonix-localization
+description: Work with the Reasonix localization repo: BCP 47 language packs, native patches, validation, tests, and PRs.
 runAs: inline
 ---
 
-# Reasonix RU Localization — operator skill
+# Reasonix Localization — operator skill
 
-Use this skill when working in `Reasonix-RU-Localization`. It is not a plugin and
-not a fork: it patches a user's installed Reasonix Studio files, keeps backups,
-and can roll back.
+Use this skill when working in `Reasonix-RU-Localization`. The repo began as a
+Russian localization and now hosts BCP 47 language packs; **`ru-RU` is the
+reference implementation**, not the only allowed language. It is not a plugin
+and not a fork: it patches a user's installed Reasonix Studio files, keeps
+backups, and can roll back.
 
 ## Read first
 
@@ -19,6 +21,15 @@ and can roll back.
 
 If a command here disagrees with the scripts, inspect the script and update the
 docs rather than guessing.
+
+## Quick routing
+
+| Task | Workflow |
+|---|---|
+| Add a new language (`de-DE`, `pt-BR`, `ja-JP`, …) | **A** |
+| Fix an existing translation (Russian reference) | **B** |
+| Update after a Reasonix release | **C** |
+| Submit a pull request | **D** |
 
 ## Hard safety rules
 
@@ -61,8 +72,9 @@ LOCALIZE-RU.bat             Russian default (ru -> ru-RU)
 tests/                      unit and profile tests
 ```
 
-Canonical Russian locale is **`ru-RU`**. `ru` remains an alias, so old commands
-and `LOCALIZE-RU.bat` keep working. Canonical template is **`xx-XX`**.
+The reference locale is **`ru-RU`**. `ru` remains an alias, so old Russian
+commands and `LOCALIZE-RU.bat` keep working. The generic template is **`xx-XX`**;
+new languages are first-class, not forks of the Russian pack.
 
 ## Profile model
 
@@ -148,7 +160,7 @@ py scripts\patch_asar.py --lang de-DE --install
 
 Or `LOCALIZE.bat --lang de-DE` / the menu pack selector.
 
-## Workflow B — fix an existing Russian string
+## Workflow B — fix an existing translation (Russian reference)
 
 1. Add the key and corrected value to `locale/ru-RU.overrides.json`.
 2. Regenerate the dictionary:
@@ -228,7 +240,7 @@ Before reporting done:
 | `patch_asar` says app.asar is locked | Close all Reasonix processes; retry |
 | Push test skipped | Expected for non-`ru` packs; `push-sw.js` is still syntax-checked |
 | Native already patched | Idempotent detection logs `(уже)`; use a pristine `app.asar` for a clean rebuild |
-| Too-long Russian label | Add a shorter value to `locale/ru-RU.overrides.json`; do not change CSS |
+| Too-long label (e.g. Russian) | Add a shorter value to `locale/<code>.overrides.json`; do not change CSS |
 
 ## What not to do
 
