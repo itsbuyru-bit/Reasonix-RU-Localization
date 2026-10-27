@@ -4,6 +4,37 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] — 2026-10-27
+
+### Added
+
+- Canonical **BCP 47** locale identifiers. The Russian locale is now
+  `ru-RU`; the template is `xx-XX`.
+- `base` and `aliases` fields in language profiles. `ru` remains an alias for
+  `ru-RU`, so old commands and `LOCALIZE-RU.bat` keep working.
+- `locale/ru-RU.json` as the canonical dictionary directory; `locale/_template.json`
+  is the Chinese → English template.
+- Settings and `rx-lang` store the full locale (`ru-RU`); `<html lang>` is
+  `ru-RU`. Machine/native/push detection uses the base (`ru`).
+
+### Changed
+
+- `languages/ru.json` moved to `languages/ru-RU.json`; `locale/` is canonical.
+  Legacy `translations/ru.json` remains as a compatibility copy.
+- Dictionary keys with a region subtag use bracket syntax (`b["ru-RU"]`) instead
+  of invalid dot syntax.
+- `native_patches` are rebuilt from `code` + `base`; `inject`, `patch_asar`,
+  `translate`, `merge`, `verify` and `menu` accept BCP 47 codes.
+
+### Verified
+
+- 38 unit tests.
+- `verify_web.py --lang ru-RU` and `--lang _template --dict locale/_template.json`.
+- Native `ru-RU` and template `xx-XX` builds on a pristine 2.47.1 `app.asar`
+  (11/11 markers, `node --check` on eight files).
+
+---
+
 ## [2.0.0] — 2026-10-27
 
 ### Added

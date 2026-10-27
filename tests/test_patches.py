@@ -90,8 +90,9 @@ class TestSettingsPatch(unittest.TestCase):
                 handle.write("var Vl=[[`zh`,`中文`],[`en`,`英文`]];")
             text, changed = inject_ru.patch_settings(path, False)
             self.assertTrue(changed)
-            self.assertIn("[`ru`,`Русский`]", text)
-            self.assertIn("[`en`,`英文`],[`ru`,`Русский`]]", text)
+            marker = "[`%s`,`%s`]" % (inject_ru.LANG, inject_ru.DISPLAY)
+            self.assertIn(marker, text)
+            self.assertIn("[`en`,`英文`],%s]" % marker, text)
 
     def test_broken_pair_is_repaired(self):
         import tempfile
@@ -99,11 +100,12 @@ class TestSettingsPatch(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = os.path.join(tmp, "Settings.js")
             with open(path, "w", encoding="utf-8") as handle:
-                handle.write("var Vl=[[`zh`,`中文`],[`en`,`英文`],`ru`,`Русский`];")
+                pair = "`%s`,`%s`" % (inject_ru.LANG, inject_ru.DISPLAY)
+                handle.write("var Vl=[[`zh`,`中文`],[`en`,`英文`],%s];" % pair)
             text, changed = inject_ru.patch_settings(path, False)
             self.assertTrue(changed)
-            self.assertIn("[`ru`,`Русский`]]", text)
-            self.assertNotIn(",`ru`,`Русский`]", text)
+            self.assertIn("[%s]]" % pair, text)
+            self.assertNotIn(",%s]" % pair, text)
 
 
 class TestPushPatches(unittest.TestCase):

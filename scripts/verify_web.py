@@ -120,7 +120,7 @@ def main():
     pristine = (
         profile["global"] not in read(originals["i18n"])
         and marker not in read(originals["settings"])
-        and ('p === "%s"' % code) not in read(originals["index"])
+        and code not in read(originals["index"])
         and "pickLanguage" not in read(originals["push"])
     )
     if not pristine:
@@ -161,9 +161,9 @@ def main():
     common.log("\n== проверка Settings, index.html и push-sw.js")
     if marker not in read(originals["settings"]):
         raise SystemExit("в Settings нет корректного пункта «%s»" % display)
-    if ('p === "%s"' % code) not in read(originals["index"]):
+    if code not in read(originals["index"]):
         raise SystemExit("index.html не пропатчен")
-    if ("%s: {" % code) not in read(originals["push"]) or "pickLanguage" not in read(originals["push"]):
+    if ("\"%s\": {" % code) not in read(originals["push"]) or "pickLanguage" not in read(originals["push"]):
         raise SystemExit("push-sw.js не пропатчен")
     common.log("  OK пункт «%s»" % display)
     common.log("  OK язык экрана запуска")

@@ -13,15 +13,17 @@ import paths
 class TestProfiles(unittest.TestCase):
     def test_ru_profile(self):
         profile = paths.load_profile("ru")
-        self.assertEqual(profile["code"], "ru")
+        self.assertEqual(profile["code"], "ru-RU")
         self.assertEqual(profile["display"], "Русский")
-        self.assertEqual(profile["global"], "__RU")
+        self.assertEqual(profile["global"], "__RU_RU")
+        self.assertEqual(profile["base"], "ru")
+        self.assertEqual(profile["aliases"], ["ru"])
         self.assertTrue(os.path.isfile(paths.profile_dictionary(profile)))
         self.assertEqual(len(native_strings.patches(profile)), 8)
 
     def test_template_profile(self):
         profile = paths.load_profile("_template")
-        self.assertEqual(profile["code"], "xx")
+        self.assertEqual(profile["code"], "xx-XX")
         self.assertIn("native", profile)
         self.assertIn("push", profile)
         self.assertEqual(len(native_patches.build(profile)), 8)
@@ -35,8 +37,8 @@ class TestProfiles(unittest.TestCase):
 
     def test_profiles_are_listed(self):
         codes = [profile["code"] for profile in paths.list_profiles()]
-        self.assertIn("ru", codes)
-        self.assertNotIn("xx", codes)
+        self.assertIn("ru-RU", codes)
+        self.assertNotIn("xx-XX", codes)
 
 
 if __name__ == "__main__":

@@ -52,7 +52,7 @@ third language to the same installation:
 | Surface | Translated? | How |
 |---|---|---|
 | Desktop window (Electron web UI) | ✅ | Dictionary injected into the `i18n-*.js` bundle |
-| Settings → Language selector | ✅ | `` [`ru`,`Русский`] `` added to the `Settings-*.js` bundle |
+| Settings → Language selector | ✅ | `` [`ru-RU`,`Русский`] `` added to the `Settings-*.js` bundle |
 | Startup splash language | ✅ | `index.html` patch |
 | Native Electron surfaces | ✅ | `app.asar`: startup page, context menu, error dialogs, tray |
 | PWA push notifications | ✅ | `push-sw.js` |
@@ -204,7 +204,7 @@ injector:
 4. allows `ru` in the language resolver and in `<html lang>`;
 5. prevents machine-language auto-detection from overwriting an explicit `ru`
    choice;
-6. adds `` [`ru`,`Русский`] `` to the language list in the `Settings-*.js`
+6. adds `` [`ru-RU`,`Русский`] `` to the language list in the `Settings-*.js`
    bundle;
 7. patches the startup language in `index.html`;
 8. translates the PWA notification worker `push-sw.js`.
@@ -267,13 +267,13 @@ template and a generator for the native Electron strings.
 
 - `languages/_template.json` — profile template: code, display name, dictionary
   paths, native and push strings, glossary.
-- `translations/_template.json` — 5,201 Chinese keys with English values.
-- `py scripts\build_native_patches.py --lang de` — build native JS blocks from
+- `locale/_template.json` — 5,201 Chinese keys with English values.
+- `py scripts\build_native_patches.py --lang de-DE` — build native JS blocks from
   the profile.
-- `py scripts\verify_web.py --lang de` — verify on a copy.
-- `py scripts\inject.py --lang de` and
-  `py scripts\patch_asar.py --lang de --install` — apply.
-- `LOCALIZE.bat --lang de` — menu for that language pack.
+- `py scripts\verify_web.py --lang de-DE` — verify on a copy.
+- `py scripts\inject.py --lang de-DE` and
+  `py scripts\patch_asar.py --lang de-DE --install` — apply.
+- `LOCALIZE.bat --lang de-DE` — menu for that language pack.
 
 Full guide: [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md).
 
@@ -338,7 +338,7 @@ decide whether the patch can be applied.
 This was a bug in versions before **1.1.1**: the language pair was inserted
 without brackets, so the UI treated `ru` and `Русский` as separate entries and
 displayed their second characters. Version 1.1.1 adds the correct pair
-`` [`ru`,`Русский`] `` and automatically repairs an already broken
+`` [`ru-RU`,`Русский`] `` and automatically repairs an already broken
 `Settings-*.js`.
 
 If you are upgrading from an older copy:
@@ -489,12 +489,17 @@ Reasonix-RU-Localization/
 ├── SECURITY.md
 ├── SUPPORT.md
 ├── languages/
-│   ├── ru.json                  # Russian profile + native/push strings
-│   └── _template.json           # English template (code "xx")
-├── translations/
-│   ├── ru.json                  # 5,201 Russian strings
-│   ├── ru_overrides.json        # targeted corrections
-│   ├── _template.json           # 5,201 Chinese keys → English values
+│   ├── ru-RU.json               # Russian BCP 47 profile + native/push
+│   └── _template.json           # English template (code "xx-XX")
+├── locale/
+│   ├── ru-RU.json               # canonical Russian dictionary
+│   ├── ru-RU.overrides.json     # canonical Russian fixes
+│   ├── _template.json           # Chinese keys → English values
+│   └── _template.overrides.json
+├── translations/                # legacy compatibility copies
+│   ├── ru.json
+│   ├── ru_overrides.json
+│   ├── _template.json
 │   └── _template_overrides.json
 ├── reference/
 │   └── fr.json                  # French reference (MIT), for cross-checks

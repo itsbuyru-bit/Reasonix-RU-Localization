@@ -49,7 +49,7 @@ Electron и push-уведомления PWA.
 | Поверхность | Перевод | Как |
 |---|---|---|
 | Окно Studio (веб-интерфейс Electron) | ✅ | Словарь в бандле `i18n-*.js` |
-| Настройки → Язык | ✅ | Пара `` [`ru`,`Русский`] `` в `Settings-*.js` |
+| Настройки → Язык | ✅ | Пара `` [`ru-RU`,`Русский`] `` в `Settings-*.js` |
 | Язык экрана запуска | ✅ | Патч `index.html` |
 | Нативные поверхности Electron | ✅ | `app.asar`: запуск, контекстное меню, диалоги, трей |
 | Push-уведомления PWA | ✅ | `push-sw.js` |
@@ -193,7 +193,7 @@ var v = { zh: {}, en: { ... } };
 3. учит функцию перевода `O()` смотреть в `__RU` при языке `ru`;
 4. разрешает `ru` в резолвере языка и в `<html lang>`;
 5. не даёт автоопределению языка перезаписать явный выбор `ru`;
-6. добавляет `` [`ru`,`Русский`] `` в список языков бандла `Settings-*.js`;
+6. добавляет `` [`ru-RU`,`Русский`] `` в список языков бандла `Settings-*.js`;
 7. правит язык экрана запуска в `index.html`;
 8. переводит push-уведомления PWA в `push-sw.js`.
 
@@ -253,14 +253,14 @@ Chromium (`Cache`, `Code Cache`, `GPUCache` и подобные). Настрой
 
 - `languages/_template.json` — шаблон профиля: код, отображаемое имя, пути к
   словарю, нативные и push-строки, глоссарий.
-- `translations/_template.json` — 5 201 китайский ключ со значениями на
+- `locale/_template.json` — 5 201 китайский ключ со значениями на
   английском.
-- `py scripts\build_native_patches.py --lang de` — собрать нативные JS-блоки
+- `py scripts\build_native_patches.py --lang de-DE` — собрать нативные JS-блоки
   из профиля.
-- `py scripts\verify_web.py --lang de` — проверить на копии.
-- `py scripts\inject.py --lang de` и
-  `py scripts\patch_asar.py --lang de --install` — применить.
-- `LOCALIZE.bat --lang de` — меню для выбранного языка.
+- `py scripts\verify_web.py --lang de-DE` — проверить на копии.
+- `py scripts\inject.py --lang de-DE` и
+  `py scripts\patch_asar.py --lang de-DE --install` — применить.
+- `LOCALIZE.bat --lang de-DE` — меню для выбранного языка.
 
 Подробная инструкция: [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md).
 
@@ -324,7 +324,7 @@ py scripts\clear_cache.py
 
 Это был баг версий до **1.1.1**: пара языков вставлялась без квадратных
 скобок, UI считал `ru` и `Русский` отдельными элементами и показывал их вторые
-символы. Версия 1.1.1 добавляет правильную пару `` [`ru`,`Русский`] `` и
+символы. Версия 1.1.1 добавляет правильную пару `` [`ru-RU`,`Русский`] `` и
 автоматически чинит уже повреждённый `Settings-*.js`.
 
 Если обновляетесь со старой копии:
@@ -474,12 +474,17 @@ Reasonix-RU-Localization/
 ├── SECURITY.md
 ├── SUPPORT.md
 ├── languages/
-│   ├── ru.json                  # русский профиль + native/push
-│   └── _template.json           # английский шаблон (код "xx")
-├── translations/
-│   ├── ru.json                  # 5 201 русская строка
-│   ├── ru_overrides.json        # точечные исправления
-│   ├── _template.json           # 5 201 китайский ключ → английские значения
+│   ├── ru-RU.json               # русский BCP 47-профиль + native/push
+│   └── _template.json           # английский шаблон (код "xx-XX")
+├── locale/
+│   ├── ru-RU.json               # канонический русский словарь
+│   ├── ru-RU.overrides.json     # канонические правки
+│   ├── _template.json           # китайские ключи → английские значения
+│   └── _template.overrides.json
+├── translations/                # legacy-копии для совместимости
+│   ├── ru.json
+│   ├── ru_overrides.json
+│   ├── _template.json
 │   └── _template_overrides.json
 ├── reference/
 │   └── fr.json                  # французский эталон (MIT) для сверки

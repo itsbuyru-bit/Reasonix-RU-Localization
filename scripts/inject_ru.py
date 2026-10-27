@@ -36,13 +36,37 @@ PUSH = {}
 
 def configure(profile):
     """Применяет языковой профиль к шаблонам патчей."""
-    global LANG, GLOBAL, DISPLAY, PUSH
+    global LANG, BASE, GLOBAL, DISPLAY, PUSH, ALIASES
     LANG = profile["code"]
+    BASE = profile.get("base") or LANG.split("-")[0]
+    ALIASES = list(profile.get("aliases") or [])
     GLOBAL = profile["global"]
     DISPLAY = profile["display"]
     PUSH = profile["push"]
-    if LANG in ("en", "zh"):
-        raise SystemExit("Код языка en/zh зарезервирован самим Reasonix.")
+    if BASE in ("en", "zh"):
+        raise SystemExit("Базовые языки en/zh уже встроены в Reasonix и не патчатся.")
+
+
+BASE = "ru"
+ALIASES = []
+
+
+def lang_values():
+    return [LANG] + [x for x in ALIASES if x and x != LANG]
+
+
+def lang_equals(expr):
+    return "||".join("%s===%s" % (expr, json.dumps(v, ensure_ascii=False)) for v in lang_values())
+
+
+def lang_starts(expr):
+    return "%s.toLowerCase().startsWith(%s)" % (expr, json.dumps(BASE, ensure_ascii=False))
+
+
+def dict_prop(dict_var):
+    if LANG.isidentifier():
+        return "%s.%s" % (dict_var, LANG)
+    return "%s[%s]" % (dict_var, json.dumps(LANG, ensure_ascii=False))
 
 
 PUSH_TEXT_OLD = """  en: {
@@ -54,7 +78,7 @@ PUSH_TEXT_OLD = """  en: {
 
 
 def push_text_new():
-    lines = ["  %s: {" % LANG]
+    lines = ["  %s: {" % json.dumps(LANG, ensure_ascii=False)]
     for key in ("approval", "input", "error", "other"):
         pair = PUSH.get(key) or []
         if len(pair) != 2:
@@ -74,6 +98,7 @@ PUSH_LANG_OLD = """function describe(data) {
 
 def push_lang_new():
     code = json.dumps(LANG, ensure_ascii=False)
+    base = json.dumps(BASE, ensure_ascii=False)
     return """function pickLanguage() {
   const tags = [self.navigator.language, ...(self.navigator.languages || [])].filter(Boolean);
   for (const tag of tags) {
@@ -86,7 +111,7 @@ def push_lang_new():
 }
 
 function describe(data) {
-  const language = pickLanguage();""" % (code, code)
+  const language = pickLanguage();""" % (base, code)
 
 
 configure(paths.load_profile(paths.DEFAULT_LANG))
@@ -99,23 +124,23 @@ def patches_247():
         (
             "R1_translate",
             "function O(e,t){let n=b[e]??e;",
-            f"function O(e,t){{let n=(y==={BT}{LANG}{BT}?globalThis.{GLOBAL}?.[e]:void 0)??b[e]??e;",
+            f"function O(e,t){{let n=({lang_equals('y')}?globalThis.{GLOBAL}?.[e]:void 0)??b[e]??e;",
         ),
         (
             "R2_resolve",
             f"return t==={BT}zh{BT}||t==={BT}en{BT}?t:w()",
-            f"return t==={BT}zh{BT}||t==={BT}en{BT}||t==={BT}{LANG}{BT}?t:w()",
+            f"return t==={BT}zh{BT}||t==={BT}en{BT}||{lang_equals('t')}?t:w()",
         ),
         (
             "R3_lang",
             f"document.documentElement.lang=y==={BT}zh{BT}?{BT}zh-CN{BT}:{BT}en{BT}",
-            f"document.documentElement.lang=y==={BT}zh{BT}?{BT}zh-CN{BT}:"
-            f"y==={BT}{LANG}{BT}?{BT}{LANG}{BT}:{BT}en{BT}",
+            f"document.documentElement.lang={lang_equals('y')}?{BT}{LANG}{BT}:"
+            f"(y==={BT}zh{BT}?{BT}zh-CN{BT}:{BT}en{BT})",
         ),
         (
             "R4_adopt",
             f"function D(e){{let t=(e??{BT}{BT}).trim().toLowerCase(),n=localStorage.getItem(x);",
-            f"function D(e){{if((localStorage.getItem(x)||{BT}{BT}).trim().toLowerCase()==={BT}{LANG}{BT})"
+            f"function D(e){{if({lang_equals('(localStorage.getItem(x)||' + BT + BT + ').trim().toLowerCase()')})"
             f"return !1;let t=(e??{BT}{BT}).trim().toLowerCase(),n=localStorage.getItem(x);",
         ),
         (
@@ -123,7 +148,7 @@ def patches_247():
             f"function w(){{return T(navigator.languages?.[0]??navigator.language??{BT}{BT})"
             f"?{BT}zh{BT}:{BT}en{BT}}}",
             f"function w(){{let L=navigator.languages?.[0]??navigator.language??{BT}{BT};"
-            f"return T(L)?{BT}zh{BT}:L.toLowerCase().startsWith({BT}{LANG}{BT})?{BT}{LANG}{BT}:{BT}en{BT}}}",
+            f"return T(L)?{BT}zh{BT}:{lang_starts('L')}?{BT}{LANG}{BT}:{BT}en{BT}}}",
         ),
     ]
 
@@ -133,23 +158,23 @@ def patches_252():
         (
             "R1_translate",
             "function A(e,t){let n=S[e]??e;",
-            f"function A(e,t){{let n=(x==={BT}{LANG}{BT}?globalThis.{GLOBAL}?.[e]:void 0)??S[e]??e;",
+            f"function A(e,t){{let n=({lang_equals('x')}?globalThis.{GLOBAL}?.[e]:void 0)??S[e]??e;",
         ),
         (
             "R2_resolve",
             f"return t==={BT}zh{BT}||t==={BT}en{BT}?t:E()",
-            f"return t==={BT}zh{BT}||t==={BT}en{BT}||t==={BT}{LANG}{BT}?t:E()",
+            f"return t==={BT}zh{BT}||t==={BT}en{BT}||{lang_equals('t')}?t:E()",
         ),
         (
             "R3_lang",
             f"document.documentElement.lang=x==={BT}zh{BT}?{BT}zh-CN{BT}:{BT}en{BT}",
-            f"document.documentElement.lang=x==={BT}zh{BT}?{BT}zh-CN{BT}:"
-            f"x==={BT}{LANG}{BT}?{BT}{LANG}{BT}:{BT}en{BT}",
+            f"document.documentElement.lang={lang_equals('x')}?{BT}{LANG}{BT}:"
+            f"(x==={BT}zh{BT}?{BT}zh-CN{BT}:{BT}en{BT})",
         ),
         (
             "R4_adopt",
             f"function k(e){{let t=(e??{BT}{BT}).trim().toLowerCase(),n=localStorage.getItem(C);",
-            f"function k(e){{if((localStorage.getItem(C)||{BT}{BT}).trim().toLowerCase()==={BT}{LANG}{BT})"
+            f"function k(e){{if({lang_equals('(localStorage.getItem(C)||' + BT + BT + ').trim().toLowerCase()')})"
             f"return !1;let t=(e??{BT}{BT}).trim().toLowerCase(),n=localStorage.getItem(C);",
         ),
         (
@@ -157,7 +182,7 @@ def patches_252():
             f"function E(){{return D(navigator.languages?.[0]??navigator.language??{BT}{BT})"
             f"?{BT}zh{BT}:{BT}en{BT}}}",
             f"function E(){{let L=navigator.languages?.[0]??navigator.language??{BT}{BT};"
-            f"return D(L)?{BT}zh{BT}:L.toLowerCase().startsWith({BT}{LANG}{BT})?{BT}{LANG}{BT}:{BT}en{BT}}}",
+            f"return D(L)?{BT}zh{BT}:{lang_starts('L')}?{BT}{LANG}{BT}:{BT}en{BT}}}",
         ),
     ]
 
@@ -243,16 +268,16 @@ def patch_i18n(path, dictionary, dry):
         if dry:
             common.log("  словарь уже есть; dry-run: обновление не записано (%d строк)" % len(dictionary))
             return text, ["dictionary_update"]
+        prop = dict_prop(dict_var)
         pattern = re.compile(
-            r";globalThis\.%s=\{.*?\};%s\.%s=globalThis\.%s;"
-            % (GLOBAL, dict_var, LANG, GLOBAL),
+            r";globalThis\.%s=\{.*?\};%s=globalThis\.%s;"
+            % (GLOBAL, re.escape(prop), GLOBAL),
             re.S,
         )
-        new_block = ";globalThis.%s=%s;%s.%s=globalThis.%s;" % (
+        new_block = ";globalThis.%s=%s;%s=globalThis.%s;" % (
             GLOBAL,
             payload,
-            dict_var,
-            LANG,
+            prop,
             GLOBAL,
         )
         if not pattern.search(text):
@@ -271,11 +296,10 @@ def patch_i18n(path, dictionary, dry):
     text, changed = apply_replacements(text, reps, dry)
     if len(changed) != len(reps):
         raise SystemExit("Не все якоря i18n совпали — файл не изменён.")
-    text = text + "\n;globalThis.%s=%s;%s.%s=globalThis.%s;\n" % (
+    text = text + "\n;globalThis.%s=%s;%s=globalThis.%s;\n" % (
         GLOBAL,
         payload,
-        dict_var,
-        LANG,
+        dict_prop(dict_var),
         GLOBAL,
     )
     common.log("  ok R6_dictionary (%d строк)" % len(dictionary))
@@ -321,7 +345,7 @@ def patch_settings(path, dry):
 def patch_index(path, dry):
     text = read(path)
     old = 'document.documentElement.lang = zh ? "zh-CN" : "en";'
-    new = 'document.documentElement.lang = p === "%s" ? "%s" : (zh ? "zh-CN" : "en");' % (LANG, LANG)
+    new = 'document.documentElement.lang = %s ? "%s" : (zh ? "zh-CN" : "en");' % (lang_equals("p"), LANG)
     if new in text:
         common.log("  index.html уже пропатчен")
         return text, False
@@ -337,7 +361,7 @@ def patch_index(path, dry):
 
 def patch_push_sw(path, dry):
     text = read(path)
-    if "  %s: {" % LANG in text and "pickLanguage" in text:
+    if "  %s: {" % json.dumps(LANG, ensure_ascii=False) in text and "pickLanguage" in text:
         common.log("  push-sw.js уже пропатчен")
         return text, False
     if "pickLanguage" in text:
@@ -508,10 +532,10 @@ def main(argv=None):
     installed = read(i18n)
     checks = {
         "словарь %s" % GLOBAL: ";globalThis.%s=" % GLOBAL in installed,
-        "словарь %s" % LANG: (".%s=globalThis.%s" % (LANG, GLOBAL)) in installed,
+        "словарь %s" % LANG: (".%s=globalThis.%s" % (LANG, GLOBAL)) in installed or ("[%s]=globalThis.%s" % (json.dumps(LANG), GLOBAL)) in installed,
         "пункт в Settings": ("%s%s%s,%s%s%s" % (BT, LANG, BT, BT, DISPLAY, BT)) in read(settings),
-        "язык index.html": ('p === "%s"' % LANG) in read(index),
-        "push-уведомления": ("%s: {" % LANG) in read(push) and "pickLanguage" in read(push),
+        "язык index.html": (lang_equals("p")) in read(index),
+        "push-уведомления": ("%s: {" % json.dumps(LANG, ensure_ascii=False)) in read(push) and "pickLanguage" in read(push),
     }
     common.log("")
     for label, ok in checks.items():

@@ -13,7 +13,7 @@ ROOT = os.path.dirname(SCRIPTS)
 TRANSLATIONS = os.path.join(ROOT, "translations")
 RU_DICT = os.path.join(TRANSLATIONS, "ru.json")
 LANGUAGES = os.path.join(ROOT, "languages")
-DEFAULT_LANG = "ru"
+DEFAULT_LANG = "ru-RU"
 REFERENCE = os.path.join(ROOT, "reference")
 FR_REFERENCE = os.path.join(REFERENCE, "fr.json")
 
@@ -148,7 +148,8 @@ def profile_path(code):
 def load_profile(code=DEFAULT_LANG):
     import json
 
-    path = profile_path(code)
+    alias = {"ru": "ru-RU"}.get(code, code)
+    path = profile_path(alias)
     if not os.path.isfile(path):
         raise SystemExit("Языковой профиль не найден: %s" % path)
     with open(path, encoding="utf-8") as f:
@@ -156,6 +157,8 @@ def load_profile(code=DEFAULT_LANG):
     for field in ("code", "display", "global", "dictionary", "native", "push"):
         if field not in profile:
             raise SystemExit("В профиле %s нет поля %s" % (path, field))
+    profile.setdefault("base", str(profile["code"]).split("-")[0])
+    profile.setdefault("aliases", [])
     if not str(profile["global"]).startswith("__"):
         raise SystemExit("Поле global в %s должно начинаться с __" % path)
     return profile

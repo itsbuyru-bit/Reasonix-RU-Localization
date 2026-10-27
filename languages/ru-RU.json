@@ -1,9 +1,9 @@
 {
- "code": "ru",
+ "code": "ru-RU",
  "display": "Русский",
- "global": "__RU",
- "dictionary": "translations/ru.json",
- "overrides": "translations/ru_overrides.json",
+ "global": "__RU_RU",
+ "dictionary": "locale/ru-RU.json",
+ "overrides": "locale/ru-RU.overrides.json",
  "target_language": "Russian",
  "glossary": "Reasonix, Reasonix Studio, DeepSeek, Claude, Gemini, OpenAI, GitHub, VS Code, Windows, macOS, Linux — do not translate.\nkernel = ядро; host = хост; workspace = рабочая область; workbench = верстак; session = сессия; chat = чат;\nconversation = беседа; message = сообщение; agent = агент; subagent = субагент; tool = инструмент;\ntrajectory = траектория; checkpoint = контрольная точка; compaction = сжатие; context = контекст;\nprompt = запрос; token = токен; model = модель; provider = провайдер; queue = очередь; job = задача;\nschedule = расписание; permission = разрешение; approval = подтверждение; sandbox = песочница;\nmemory = память; knowledge = знания; marketplace = маркетплейс; extension = расширение; skill = навык;\npersona = персона; inbox = входящие; notice = уведомление; usage = использование; storage = хранилище;\nmetrics = метрики; graph = граф; reasoning = рассуждение; thinking = размышление; streaming = потоковая передача;\nfallback = резервный вариант; override = переопределить; toggle = переключатель; checkbox = флажок;\ndropdown = раскрывающийся список; sidebar = боковая панель; toolbar = панель инструментов; tab = вкладка;\ntray = трей; notification = уведомление; attachment = вложение; voice input = голосовой ввод; dictation = диктовка;\nworkspace lease = резервирование рабочей области; surface = интерфейс; composition = композиция;\nbranch = ветка; commit = коммит; merge = слияние; repository = репозиторий; build = сборка; release = выпуск;\nproxy = прокси; gateway = шлюз; endpoint = эндпоинт; relay = ретранслятор; vendor = производитель;\nsubscription = подписка; plan = тариф; quota = квота; balance = баланс; invoice = счёт; trial = пробный период;\nshortcut = сочетание клавиш; hotkey = горячая клавиша; clipboard = буфер обмена; tooltip = подсказка;\nmodal = модальное окно; dialog = диалог; context menu = контекстное меню; status bar = строка состояния;\nplaceholder = подсказка; badge = значок; header = заголовок; filter = фильтр; sort = сортировка;\nquery = запрос; result = результат; highlight = выделение; archive = архивировать; pin = закрепить;\nfavorite = избранное; share = поделиться; export = экспорт; import = импорт; download = скачать;\nupload = загрузить; sync = синхронизировать; refresh = обновить; reload = перезагрузить; restart = перезапустить;\nretry = повторить; skip = пропустить; approve = одобрить; deny = отклонить; allow = разрешить;\nblock = заблокировать; enable = включить; disable = отключить; install = установить; uninstall = удалить;\nupgrade = обновить; downgrade = откатить; restore = восстановить; backup = резервная копия; trash = корзина.",
  "native": {
@@ -96,10 +96,10 @@
     [
      "lang",
      "  if (want === \"zh\" || want === \"en\") return want;\n  return isChinese(machineLocale) ? \"zh\" : \"en\";",
-     "  if (want === \"zh\" || want === \"en\" || want === \"ru\") return want;\n  if (isRussian(machineLocale)) return \"ru\";\n  return isChinese(machineLocale) ? \"zh\" : \"en\";"
+     "  if (want === \"zh\" || want === \"en\" || want === \"ru-RU\") return want;\n  if (isRussian(machineLocale)) return \"ru-RU\";\n  return isChinese(machineLocale) ? \"zh\" : \"en\";"
     ],
     [
-     "isRussian",
+     "checker",
      "module.exports = { uiLanguage };",
      "function isRussian(tag) {\n  return String(tag ?? \"\").toLowerCase().startsWith(\"ru\");\n}\n\nmodule.exports = { uiLanguage };"
     ]
@@ -111,12 +111,12 @@
     [
      "text",
      "  en: [\"Reasonix Studio is starting\", \"Waiting for the local service to be ready. This window will close automatically.\"],",
-     "  en: [\"Reasonix Studio is starting\", \"Waiting for the local service to be ready. This window will close automatically.\"],\n  ru: [\"Reasonix Studio запускается\", \"Ожидание готовности локальной службы. Это окно закроется автоматически.\"],"
+     "  en: [\"Reasonix Studio is starting\", \"Waiting for the local service to be ready. This window will close automatically.\"],\n  \"ru-RU\": [\"Reasonix Studio запускается\", \"Ожидание готовности локальной службы. Это окно закроется автоматически.\"],"
     ],
     [
      "pick",
      "  const [title, note] = String(locale).toLowerCase().startsWith(\"zh\") ? TEXT.zh : TEXT.en;",
-     "  const loc = String(locale).toLowerCase();\n  const [title, note] = loc.startsWith(\"zh\") ? TEXT.zh : loc.startsWith(\"ru\") ? TEXT.ru : TEXT.en;"
+     "  const loc = String(locale).toLowerCase();\n  const [title, note] = loc.startsWith(\"zh\") ? TEXT.zh : loc.startsWith(\"ru\") ? TEXT[\"ru-RU\"] : TEXT.en;"
     ]
    ]
   },
@@ -124,9 +124,9 @@
    "file": "editmenu.js",
    "reps": [
     [
-     "ru-block",
+     "edit-block",
      "  en: {\n    edit: \"Edit\",",
-     "  ru: {\n    edit: \"Правка\",\n    undo: \"Отменить\",\n    redo: \"Повторить\",\n    cut: \"Вырезать\",\n    copy: \"Копировать\",\n    paste: \"Вставить\",\n    selectAll: \"Выделить всё\",\n    pasteAndMatchStyle: \"Вставить и подстроить стиль\",\n    delete: \"Удалить\",\n    substitutions: \"Замены\",\n    showSubstitutions: \"Показать замены\",\n    smartQuotes: \"Умные кавычки\",\n    smartDashes: \"Умные тире\",\n    textReplacement: \"Замена текста\",\n    speech: \"Диктовка\",\n    startSpeaking: \"Начать диктовку\",\n    stopSpeaking: \"Остановить диктовку\",\n  },\n  en: {\n    edit: \"Edit\","
+     "  \"ru-RU\": {\n    edit: \"Правка\",\n    undo: \"Отменить\",\n    redo: \"Повторить\",\n    cut: \"Вырезать\",\n    copy: \"Копировать\",\n    paste: \"Вставить\",\n    selectAll: \"Выделить всё\",\n    pasteAndMatchStyle: \"Вставить и подстроить стиль\",\n    delete: \"Удалить\",\n    substitutions: \"Замены\",\n    showSubstitutions: \"Показать замены\",\n    smartQuotes: \"Умные кавычки\",\n    smartDashes: \"Умные тире\",\n    textReplacement: \"Замена текста\",\n    speech: \"Диктовка\",\n    startSpeaking: \"Начать диктовку\",\n    stopSpeaking: \"Остановить диктовку\",\n  },\n  en: {\n    edit: \"Edit\","
     ]
    ]
   },
@@ -151,7 +151,7 @@
     [
      "pick",
      "  const zh = String(locale).toLowerCase().startsWith(\"zh\");\n  const hint = HINTS[code]?.[zh ? 1 : 0];\n  const body = hint ? `${reason}\\n\\n${hint}` : reason;\n  if (zh) {\n    return { title: \"Reasonix Studio 无法启动\", detail: `${body}\\n\\n日志位于：\\n${logDir}` };\n  }",
-     "  const loc = String(locale).toLowerCase();\n  const zh = loc.startsWith(\"zh\");\n  const ru = loc.startsWith(\"ru\");\n  const hint = HINTS[code]?.[zh ? 1 : ru ? 2 : 0];\n  const body = hint ? `${reason}\\n\\n${hint}` : reason;\n  if (zh) {\n    return { title: \"Reasonix Studio 无法启动\", detail: `${body}\\n\\n日志位于：\\n${logDir}` };\n  }\n  if (ru) {\n    return { title: \"Reasonix Studio не удалось запустить\", detail: `${body}\\n\\nЖурналы находятся в:\\n${logDir}` };\n  }"
+     "  const loc = String(locale).toLowerCase();\n  const zh = loc.startsWith(\"zh\");\n  const target = loc.startsWith(\"ru\");\n  const hint = HINTS[code]?.[zh ? 1 : target ? 2 : 0];\n  const body = hint ? `${reason}\\n\\n${hint}` : reason;\n  if (zh) {\n    return { title: \"Reasonix Studio 无法启动\", detail: `${body}\\n\\n日志位于：\\n${logDir}` };\n  }\n  if (target) {\n    return { title: \"Reasonix Studio не удалось запустить\", detail: `${body}\\n\\nЖурналы находятся в:\\n${logDir}` };\n  }"
     ]
    ]
   },
@@ -161,7 +161,7 @@
     [
      "ru",
      "  return {\n    title: \"Reasonix Studio could not open its window\",",
-     "  if (String(locale).toLowerCase().startsWith(\"ru\")) {\n    return {\n      title: \"Reasonix Studio не удалось открыть окно\",\n      detail:\n        \"Файлы, загружаемые Reasonix Studio, содержат записи доступа, привязывающие их к конкретному пакету приложения Windows (AppContainer), \" +\n        \"и изолированные процессы Chromium завершаются при загрузке такого файла. Studio попыталась удалить их, но получила отказ для:\\n\\n\" +\n        shown + (more > 0 ? `\\n…и ещё ${more}` : \"\") +\n        \"\\n\\nЗапустите Reasonix Studio один раз от имени администратора — она удалит их сама.\",\n    };\n  }\n  return {\n    title: \"Reasonix Studio could not open its window\","
+     "  if (String(locale).toLowerCase().startsWith(\"ru\")) {\n    return {\n      title: \"Reasonix Studio не удалось открыть окно\",\n      detail:\n        \"Файлы, загружаемые Reasonix Studio, содержат записи доступа, привязывающие их к конкретному пакету приложения Windows (AppContainer), и изолированные процессы Chromium завершаются при загрузке такого файла. Studio попыталась удалить их, но получила отказ для:\\n\\n\" +\n        shown + (more > 0 ? `\\n…и ещё ${more}` : \"\") +\n        \"\\n\\nЗапустите Reasonix Studio один раз от имени администратора — она удалит их сама.\",\n    };\n  }\n  return {\n    title: \"Reasonix Studio could not open its window\","
     ]
    ]
   },
@@ -185,5 +185,9 @@
     ]
    ]
   }
+ ],
+ "base": "ru",
+ "aliases": [
+  "ru"
  ]
 }

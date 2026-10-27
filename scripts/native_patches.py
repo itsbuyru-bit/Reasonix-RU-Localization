@@ -82,6 +82,10 @@ def build(profile):
     native = profile["native"]
     checker = native["uilang"]["checker"]
     code_js = js(code)
+    base = profile.get("base") or code.split("-")[0]
+    base_js = js(base)
+    aliases = profile.get("aliases") or []
+    want_expr = " || ".join("want === %s" % js(v) for v in [code] + list(aliases))
 
     uilang_new = (
         '  if (want === "zh" || want === "en" || want === %s) return want;\n'
@@ -92,7 +96,7 @@ def build(profile):
         'function %s(tag) {\n'
         '  return String(tag ?? "").toLowerCase().startsWith(%s);\n'
         '}\n\n'
-        'module.exports = { uiLanguage };' % (checker, code_js)
+        'module.exports = { uiLanguage };' % (checker, base_js)
     )
 
     starting_new = (
@@ -103,7 +107,7 @@ def build(profile):
     starting_pick_new = (
         '  const loc = String(locale).toLowerCase();\n'
         '  const [title, note] = loc.startsWith("zh") ? TEXT.zh : loc.startsWith(%s) ? TEXT[%s] : TEXT.en;'
-        % (code_js, code_js)
+        % (base_js, code_js)
     )
 
     edit_lines = ["  %s: {" % code_js]
@@ -122,7 +126,7 @@ def build(profile):
         '      detail: %s,\n'
         '    };\n'
         '  }\n'
-        % (code_js, js(host["message"]), js(host["ok"]),
+        % (base_js, js(host["message"]), js(host["ok"]),
            tmpl(host["detail"], {"how": "how", "logsDir": "logsDir"}))
         + HOSTEXIT_OLD
     )
@@ -168,7 +172,7 @@ def build(profile):
         '  if (target) {\n'
         '    return { title: %s, detail: %s };\n'
         '  }'
-        % (code_js, js(shell["title"]), tmpl(shell["detail"], {"body": "body", "logDir": "logDir"}))
+        % (base_js, js(shell["title"]), tmpl(shell["detail"], {"body": "body", "logDir": "logDir"}))
     )
 
     grants = native["packagegrants"]
@@ -183,7 +187,7 @@ def build(profile):
         '    };\n'
         '  }\n'
         % (
-            code_js,
+            base_js,
             js(grants["title"]),
             js(grants["detail_before"]),
             tmpl(grants["detail_more"], {"more": "more"}),
@@ -201,7 +205,7 @@ def build(profile):
         '        cancelId: 1,\n'
         '        message: String(app.getLocale()).toLowerCase().startsWith(%s) ? %s : "找到一个旧版本的 Reasonix Studio",\n'
         '        detail: String(app.getLocale()).toLowerCase().startsWith(%s) ? %s : `${bundle}\\n\\n它和当前这个共用同一份数据，所以两个图标打开的是同一个窗口。移到废纸篓不会动你的会话和设置。`,'
-        % (code_js, buttons, code_js, js(legacy["message"]), code_js, legacy_detail)
+        % (base_js, buttons, base_js, js(legacy["message"]), base_js, legacy_detail)
     )
 
     tray = native["tray"]
