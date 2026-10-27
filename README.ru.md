@@ -275,7 +275,7 @@ Chromium (`Cache`, `Code Cache`, `GPUCache` и подобные). Настрой
 русскими значениями по умолчанию для совместимости.
 
 ИИ-агентам, работающим с репозиторием, следует загрузить
-`.agents/skills/reasonix-ru-localization/SKILL.md`: там безопасные сценарии,
+`.agents/skills/reasonix-localization/SKILL.md`: там безопасные сценарии,
 матрица проверок и запреты.
 
 ## Ручные команды
