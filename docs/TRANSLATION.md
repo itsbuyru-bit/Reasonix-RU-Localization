@@ -181,8 +181,8 @@ Until then, fork the repository and adapt these constants.
 
 Only new strings are sent to the API after an update. The full 2.47.1 run used
 about 422k input and 1.05M output tokens on `deepseek-v4-pro`; the 2.52.0 update
-translated 231 new strings, bringing the dictionary to 5,188. A small update
-usually costs a few cents. Never commit the key or request logs.
+translated 231 new strings (5,188 total), and 2.53.1 added 13 more (5,201 total).
+A small update usually costs a few cents. Never commit the key or request logs.
 
 ## Quality checks before a release
 

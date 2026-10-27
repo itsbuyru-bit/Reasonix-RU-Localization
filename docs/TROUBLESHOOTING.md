@@ -3,11 +3,11 @@
 ## First checks
 
 1. Which Reasonix Studio version is installed? The menu prints it at startup.
-   The tested build is **2.52.0** (2.47.x is also supported).
+   The tested build is **2.53.1** (2.47.x–2.52.x are also supported).
 2. Did you completely quit Reasonix Studio before applying, including the tray
    icon? `app.asar` is locked while the app runs.
 3. Which menu option did you use: **1** (everything) or **2** (web only)?
-4. Does the menu print the dictionary path and a count of 5,188 strings?
+4. Does the menu print the dictionary path and a count of 5,201 strings?
 
 If you open an issue, include the exact menu/script output and the version.
 Remove API keys, tokens, session data, and private code first.
@@ -54,7 +54,7 @@ present”.
 py scripts\merge_parts.py
 ```
 
-It should report 5,188 translated strings.
+It should report 5,201 translated strings.
 
 - If the interface is English but the language list contains **Русский**, the
   i18n bundle may not have the `v.ru` registration. Run
@@ -120,7 +120,7 @@ Never commit the key or paste it into an issue. Without a key the existing
 
 ## A new Reasonix version does not accept the patch
 
-The scripts print a warning for a non-2.47.x/2.52.x build and then verify every anchor.
+The scripts print a warning for a 2.47.x–2.53.x build it has not seen and then verify every anchor.
 If an anchor moved, they stop before writing and name it.
 
 - Run `py scripts\inject_ru.py --dry-run` and
@@ -184,7 +184,7 @@ open an issue with a screenshot and the affected control.
 ## Some strings stay Chinese
 
 A missing key falls back to Chinese by design. The included dictionary is
-complete for 2.52.0. After updating Reasonix, run menu option **5** to translate
+complete for 2.53.1. After updating Reasonix, run menu option **5** to translate
 the new strings, then option **1** to apply.
 
 ## Antivirus or SmartScreen

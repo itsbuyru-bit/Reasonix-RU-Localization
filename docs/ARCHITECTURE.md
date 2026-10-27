@@ -28,7 +28,7 @@ files, patch copies, validate them, and write them back with backups.
 
 The minified `i18n-*.js` bundle contains a dictionary similar to:
 
-In 2.47.x the dictionary variable is `v`; in 2.52.x it is `b`:
+In 2.47.x the dictionary variable is `v`; in 2.52.x and 2.53.x it is `b`:
 
 ```js
 var v = { zh: {}, en: { ... } };   // 2.47.x
@@ -157,7 +157,7 @@ work/backup/<version>/
 
 ## Version and anchors
 
-The scripts target Reasonix Studio 2.47.x and 2.52.x. A different version is **not**
+The scripts target Reasonix Studio 2.47.x–2.53.x. A different version is **not**
 rejected by number. Instead:
 
 1. the script prints a warning;

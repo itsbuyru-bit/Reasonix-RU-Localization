@@ -5,9 +5,9 @@
 [![CI](https://github.com/itsbuyru-bit/Reasonix-RU-Localization/actions/workflows/ci.yml/badge.svg)](https://github.com/itsbuyru-bit/Reasonix-RU-Localization/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Platform: Windows](https://img.shields.io/badge/platform-Windows-0078D4.svg)](#requirements)
-[![Reasonix Studio: 2.47.x | 2.52.x](https://img.shields.io/badge/Reasonix%20Studio-2.47.x%20%7C%202.52.x-6f42c1.svg)](#supported-version)
+[![Reasonix Studio: 2.47.x–2.53.x](https://img.shields.io/badge/Reasonix%20Studio-2.47.x%E2%80%932.53.x-6f42c1.svg)](#supported-version)
 
-An unofficial Russian localization for **Reasonix Studio 2.47.x–2.52.x**. It adds
+An unofficial Russian localization for **Reasonix Studio 2.47.x–2.53.x**. It adds
 **Русский** to the in-app language selector, translates the Electron native
 surfaces, and translates the PWA push notifications.
 
@@ -66,7 +66,7 @@ patches the copy already installed on the machine and stores dated backups.
 
 ## Features
 
-- **5,188 translated interface strings** — complete dictionary, no blanks.
+- **5,201 translated interface strings** — complete dictionary, no blanks.
 - **Language selector integration** — choose **Русский** next to 中文 and
   English; the choice persists.
 - **Native shell translation** — startup page, right-click menu, error
@@ -90,13 +90,14 @@ patches the copy already installed on the machine and stores dated backups.
 
 | Component | Value |
 |---|---|
-| Reasonix Studio | **2.47.x and 2.52.x** — tested on **2.52.0** |
+| Reasonix Studio | **2.47.x–2.53.x** — tested on **2.53.1** |
+| Web bundles (2.53) | `i18n-HHs-Tohs.js`, `Settings-BvjNQhtd.js` |
 | Web bundles (2.52) | `i18n-DunoFOkp.js`, `Settings-Bj8eAezi.js` |
 | Web bundles (2.47) | `i18n-DS26LhWq.js`, `Settings-B_4tuZ4i.js` |
 | PWA worker | `push-sw.js` |
 | Native bundle | `resources/app.asar` |
 
-The version is not a hard gate. On a different 2.47.x/2.52.x build the scripts print a
+The version is not a hard gate. On a different 2.47.x–2.53.x build the scripts print a
 warning and still verify every anchor; if an anchor moved, they stop before
 writing and report which one. Update the anchors in
 `scripts/inject_ru.py` (web) or `scripts/native_strings.py` (native) when that
@@ -113,7 +114,7 @@ applied again after every update. See
 | Need | Why |
 |---|---|
 | **Windows 10/11** | The scripts use Windows paths and `tasklist`. |
-| **Reasonix Studio 2.47.x or 2.52.x** | The tool patches your own installation. |
+| **Reasonix Studio 2.47.x–2.53.x** | The tool patches your own installation. |
 | **Python 3.8+** | All scripts are standard-library Python. |
 | **Node.js 18+** | Rebuilding `app.asar` and syntax-checking bundles. |
 | **DeepSeek API key** | Only for re-translating new strings after an update. The ready dictionary is included. |
@@ -422,7 +423,7 @@ If another control still overflows:
 ### Some strings remain Chinese
 
 A missing key falls back to Chinese by design; it never renders blank. The
-included dictionary is complete for 2.52.0, but a newer build may add strings.
+included dictionary is complete for 2.53.1, but a newer build may add strings.
 Run the update procedure (menu option 5) to translate them.
 
 ---
@@ -431,7 +432,7 @@ Run the update procedure (menu option 5) to translate them.
 
 - **Windows-oriented.** The logic is portable, but paths and `tasklist` are
   Windows-specific.
-- **Anchors are verified on 2.47.x and 2.52.x.** A new build is checked by anchors, not by
+- **Anchors are verified on 2.47.x–2.53.x.** A new build is checked by anchors, not by
   the version number; if they moved, the patch stops.
 - **Go backend and CLI are not covered.** Their strings are compiled into the
   binary.
@@ -463,7 +464,7 @@ Reasonix-RU-Localization/
 ├── SECURITY.md
 ├── SUPPORT.md
 ├── translations/
-│   ├── ru.json                  # 5,188 Russian strings
+│   ├── ru.json                  # 5,201 Russian strings
 │   └── ru_overrides.json        # targeted corrections
 ├── reference/
 │   └── fr.json                  # French reference (MIT), for cross-checks

@@ -4,6 +4,24 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.3.1] — 2026-10-27
+
+### Added
+
+- **Reasonix Studio 2.53.1 support**: new web bundles
+  `i18n-HHs-Tohs.js` and `Settings-BvjNQhtd.js`. The minified layout is the same
+  as 2.52.x, so the 2.52 anchors apply unchanged.
+- **13 new strings translated**; the dictionary now contains **5,201**
+  strings.
+
+### Verified
+
+- All native `app.asar` anchors still match 2.53.1.
+- `Settings`, `index.html` and `push-sw.js` anchors are unchanged.
+- 2.47.x, 2.52.x and 2.53.x are supported.
+
+---
+
 ## [1.3.0] — 2026-10-26
 
 ### Added

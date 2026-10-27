@@ -376,7 +376,7 @@ def main():
     version = paths.app_version() or "unknown"
     common.log("Reasonix Studio: %s" % paths.app_dir())
     common.log("Версия: %s" % version)
-    if not (str(version).startswith("2.47") or str(version).startswith("2.52")):
+    if not (str(version).startswith("2.47") or str(version).startswith("2.52") or str(version).startswith("2.53")):
         common.log(
             "! Версия %s не проверялась. Якоря будут проверены; "
             "при несовпадении скрипт остановится." % version
