@@ -15,7 +15,7 @@
 - Source: https://github.com/esengine/DeepSeek-Reasonix
 - License: MIT
 - Copyright: © 2026 Reasonix Contributors
-- The full license text is in `LICENSE-REASONIX.md`.
+- The full license text is in `THIRD-PARTY-REASONIX.md`.
 - This project does not redistribute Reasonix source code, bundles, or
   binaries. It patches the user's own installation and keeps dated backups.
 

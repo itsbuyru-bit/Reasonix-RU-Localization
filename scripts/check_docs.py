@@ -15,6 +15,7 @@ REQUIRED = [
     "languages/ru-RU.json",
     "locale/ru-RU.json",
     "docs/ADDING-A-LANGUAGE.md",
+    "docs/USING-THE-SKILL.md",
     "docs/TRANSLATION.md",
     "docs/TROUBLESHOOTING.md",
     "README.md",
