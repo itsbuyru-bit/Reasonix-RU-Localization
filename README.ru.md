@@ -276,7 +276,8 @@ Chromium (`Cache`, `Code Cache`, `GPUCache` и подобные). Настрой
 
 ИИ-агентам, работающим с репозиторием, следует загрузить
 `.agents/skills/reasonix-localization/SKILL.md`: там безопасные сценарии,
-матрица проверок и запреты.
+матрица проверок и запреты. Установка для Reasonix и других ИИ:
+[docs/USING-THE-SKILL.md](docs/USING-THE-SKILL.md).
 
 ## Ручные команды
 
@@ -477,7 +478,7 @@ Reasonix-RU-Localization/
 ├── README.md                    # английский (по умолчанию)
 ├── README.ru.md                 # русский
 ├── LICENSE
-├── LICENSE-REASONIX.md
+├── THIRD-PARTY-REASONIX.md
 ├── THIRD-PARTY.md
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
@@ -627,7 +628,7 @@ Advisories; см. [SECURITY.md](SECURITY.md).
   (MIT, © 2026 Reasonix-Traduction-Fr contributors). См.
   [THIRD-PARTY.md](THIRD-PARTY.md).
 - Reasonix Studio / DeepSeek-Reasonix — MIT, © Reasonix Contributors; текст
-  лицензии в [LICENSE-REASONIX.md](LICENSE-REASONIX.md).
+  лицензии в [THIRD-PARTY-REASONIX.md](THIRD-PARTY-REASONIX.md).
 - `@electron/asar` — MIT, ставится по требованию в `work/tools`.
 - Необязательный шаг перевода использует DeepSeek API; ключи и логи запросов в
   репозиторий не попадают.

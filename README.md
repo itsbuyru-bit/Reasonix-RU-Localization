@@ -289,7 +289,8 @@ defaults for backward compatibility.
 
 AI agents working in this repository should load
 `.agents/skills/reasonix-localization/SKILL.md`; it contains the safe
-workflows, validation matrix and non-destructive rules.
+workflows, validation matrix and non-destructive rules. Installation for
+Reasonix and other AI agents: [docs/USING-THE-SKILL.md](docs/USING-THE-SKILL.md).
 
 ## Manual commands
 
@@ -492,7 +493,7 @@ Reasonix-RU-Localization/
 ├── README.md                    # English (default)
 ├── README.ru.md                 # Russian
 ├── LICENSE
-├── LICENSE-REASONIX.md
+├── THIRD-PARTY-REASONIX.md
 ├── THIRD-PARTY.md
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
@@ -644,7 +645,7 @@ Advisories; see [SECURITY.md](SECURITY.md).
   (MIT, © 2026 Reasonix-Traduction-Fr contributors). See
   [THIRD-PARTY.md](THIRD-PARTY.md).
 - Reasonix Studio / DeepSeek-Reasonix is MIT, © Reasonix Contributors; the
-  license text is kept in [LICENSE-REASONIX.md](LICENSE-REASONIX.md).
+  license text is kept in [THIRD-PARTY-REASONIX.md](THIRD-PARTY-REASONIX.md).
 - `@electron/asar` is MIT and is installed on demand into `work/tools`.
 - The optional translation step uses the DeepSeek API; no keys or request logs
   are included in this repository.
