@@ -11,8 +11,13 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 - **Fix a translation.** This is the most useful contribution.
 - **Report a bug** in the patcher, the menu, or the update pipeline.
 - **Improve documentation** or the troubleshooting guide.
-- **Add a new language.** The pipeline is generic; see
-  [docs/TRANSLATION.md](docs/TRANSLATION.md).
+- **Add a new language.** The pipeline is generic and BCP 47 based; see
+  [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md). Use the
+  `languages/_template.json` and `locale/_template.json` templates, then run:
+  ```bat
+  python scriptsalidate_language_pack.py --lang de-DE
+  python scripts\check_docs.py
+  ```
 - **Update anchors** for a newer Reasonix Studio release.
 
 ## Reporting bugs

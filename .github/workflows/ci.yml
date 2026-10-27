@@ -40,5 +40,14 @@ jobs:
           node --check scripts/verify_push_sw.mjs
           node --check scripts/asar_tool.mjs
 
+      - name: Validate language packs
+        run: python scripts/validate_language_pack.py
+
+      - name: Check documentation links
+        run: python scripts/check_docs.py
+
       - name: Validate dictionary JSON
-        run: python -m json.tool translations/ru.json > $null
+        run: |
+          python -m json.tool translations/ru.json > $null
+          python -m json.tool locale/ru-RU.json > $null
+          python -m json.tool languages/ru-RU.json > $null

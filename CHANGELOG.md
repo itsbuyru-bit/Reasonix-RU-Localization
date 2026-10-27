@@ -4,6 +4,27 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [2.2.0] — 2026-10-27
+
+### Added
+
+- If more than one language profile is installed, `LOCALIZE.bat` asks which
+  language pack to use. `--lang de-DE` bypasses the prompt; a single pack starts
+  without a question.
+- `scripts/validate_language_pack.py` validates BCP 47 profiles, dictionaries,
+  placeholders, native/push strings and `native_patches`.
+- `scripts/check_docs.py` validates local documentation links and required files.
+- PR template and `CONTRIBUTING.md` describe the language-pack PR process.
+- `Auto-merge` workflow: a maintainer can add the `automerge` label to enable
+  GitHub auto-merge after required checks. It never bypasses CI or branch
+  protection.
+
+### Changed
+
+- CI runs the language-pack validator and docs check on every push/PR.
+
+---
+
 ## [2.1.0] — 2026-10-27
 
 ### Added

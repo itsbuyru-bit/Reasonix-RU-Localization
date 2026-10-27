@@ -275,6 +275,13 @@ template and a generator for the native Electron strings.
   `py scripts\patch_asar.py --lang de-DE --install` — apply.
 - `LOCALIZE.bat --lang de-DE` — menu for that language pack.
 
+If more than one pack is installed, `LOCALIZE.bat` asks which one to use;
+`--lang de-DE` skips the prompt.
+
+Pull requests run `validate_language_pack.py` and `check_docs.py` in CI. A
+maintainer can add the `automerge` label to enable GitHub auto-merge after the
+required checks; it does not bypass CI or branch protection.
+
 Full guide: [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md).
 
 The old `inject_ru.py`, `patch_asar_ru.py` and `LOCALIZE-RU.bat` remain Russian

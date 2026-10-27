@@ -213,10 +213,34 @@ def option_value(argv, name, default):
     return default
 
 
+def choose_pack(argv):
+    explicit = option_value(argv, "--lang", None)
+    if explicit:
+        return paths.load_profile(explicit)
+    profiles = paths.list_profiles()
+    if not profiles:
+        return paths.load_profile("ru")
+    if len(profiles) == 1:
+        return profiles[0]
+    common.log("Языковой пакет / Language pack:")
+    for index, profile in enumerate(profiles, 1):
+        common.log("  %d. %s (%s)" % (index, profile["display"], profile["code"]))
+    try:
+        answer = input("Выбор / Choice [1]: ").strip()
+    except (EOFError, KeyboardInterrupt):
+        answer = ""
+    for profile in profiles:
+        if answer == profile["code"]:
+            return profile
+    if answer.isdigit() and 1 <= int(answer) <= len(profiles):
+        return profiles[int(answer) - 1]
+    return profiles[0]
+
+
 def main():
     global PACK_CODE, PACK_DISPLAY, PACK_DICT, PROFILE
     argv = sys.argv[1:]
-    profile = paths.load_profile(option_value(argv, "--lang", "ru"))
+    profile = choose_pack(argv)
     PROFILE = profile
     PACK_CODE = profile["code"]
     PACK_DISPLAY = profile["display"]

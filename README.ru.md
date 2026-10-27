@@ -262,6 +262,13 @@ Chromium (`Cache`, `Code Cache`, `GPUCache` и подобные). Настрой
   `py scripts\patch_asar.py --lang de-DE --install` — применить.
 - `LOCALIZE.bat --lang de-DE` — меню для выбранного языка.
 
+Если установлено несколько пакетов, `LOCALIZE.bat` спросит, какой использовать;
+`--lang de-DE` пропускает вопрос.
+
+В PR CI запускает `validate_language_pack.py` и `check_docs.py`. Мейнтейнер может
+добавить метку `automerge`, чтобы включить GitHub auto-merge после обязательных
+проверок; CI и branch protection при этом не обходятся.
+
 Подробная инструкция: [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md).
 
 Старые `inject_ru.py`, `patch_asar_ru.py` и `LOCALIZE-RU.bat` остаются

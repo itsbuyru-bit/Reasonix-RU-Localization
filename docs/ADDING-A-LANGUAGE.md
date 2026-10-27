@@ -215,3 +215,23 @@ scripts/
   merge_parts.py          dictionary merger, --lang
   verify_web.py           copy-only verification, --lang
 ```
+
+
+## Pull request and CI
+
+1. Run the local checks:
+   ```bat
+   python scriptsalidate_language_pack.py --lang de-DE
+   python scripts\check_docs.py
+   python -m unittest discover -s tests
+   ```
+2. Open a pull request with the `translation` label. CI validates the profile,
+   dictionary keys, placeholders, native fields, push strings and documentation
+   links on every PR.
+3. A maintainer reviews the translation. Branch protection should require the
+   CI checks before merge.
+
+**Auto-merge.** GitHub can merge a reviewed PR automatically after the required
+checks pass. Enable repository auto-merge and apply the `automerge` label to a
+trusted PR; the `Auto-merge` workflow only *enables* GitHub auto-merge and never
+bypasses CI or branch protection. Do not label untrusted or unreviewed PRs.
