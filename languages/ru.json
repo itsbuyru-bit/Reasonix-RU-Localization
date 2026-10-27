@@ -1,0 +1,189 @@
+{
+ "code": "ru",
+ "display": "Русский",
+ "global": "__RU",
+ "dictionary": "translations/ru.json",
+ "overrides": "translations/ru_overrides.json",
+ "target_language": "Russian",
+ "glossary": "Reasonix, Reasonix Studio, DeepSeek, Claude, Gemini, OpenAI, GitHub, VS Code, Windows, macOS, Linux — do not translate.\nkernel = ядро; host = хост; workspace = рабочая область; workbench = верстак; session = сессия; chat = чат;\nconversation = беседа; message = сообщение; agent = агент; subagent = субагент; tool = инструмент;\ntrajectory = траектория; checkpoint = контрольная точка; compaction = сжатие; context = контекст;\nprompt = запрос; token = токен; model = модель; provider = провайдер; queue = очередь; job = задача;\nschedule = расписание; permission = разрешение; approval = подтверждение; sandbox = песочница;\nmemory = память; knowledge = знания; marketplace = маркетплейс; extension = расширение; skill = навык;\npersona = персона; inbox = входящие; notice = уведомление; usage = использование; storage = хранилище;\nmetrics = метрики; graph = граф; reasoning = рассуждение; thinking = размышление; streaming = потоковая передача;\nfallback = резервный вариант; override = переопределить; toggle = переключатель; checkbox = флажок;\ndropdown = раскрывающийся список; sidebar = боковая панель; toolbar = панель инструментов; tab = вкладка;\ntray = трей; notification = уведомление; attachment = вложение; voice input = голосовой ввод; dictation = диктовка;\nworkspace lease = резервирование рабочей области; surface = интерфейс; composition = композиция;\nbranch = ветка; commit = коммит; merge = слияние; repository = репозиторий; build = сборка; release = выпуск;\nproxy = прокси; gateway = шлюз; endpoint = эндпоинт; relay = ретранслятор; vendor = производитель;\nsubscription = подписка; plan = тариф; quota = квота; balance = баланс; invoice = счёт; trial = пробный период;\nshortcut = сочетание клавиш; hotkey = горячая клавиша; clipboard = буфер обмена; tooltip = подсказка;\nmodal = модальное окно; dialog = диалог; context menu = контекстное меню; status bar = строка состояния;\nplaceholder = подсказка; badge = значок; header = заголовок; filter = фильтр; sort = сортировка;\nquery = запрос; result = результат; highlight = выделение; archive = архивировать; pin = закрепить;\nfavorite = избранное; share = поделиться; export = экспорт; import = импорт; download = скачать;\nupload = загрузить; sync = синхронизировать; refresh = обновить; reload = перезагрузить; restart = перезапустить;\nretry = повторить; skip = пропустить; approve = одобрить; deny = отклонить; allow = разрешить;\nblock = заблокировать; enable = включить; disable = отключить; install = установить; uninstall = удалить;\nupgrade = обновить; downgrade = откатить; restore = восстановить; backup = резервная копия; trash = корзина.",
+ "native": {
+  "uilang": {
+   "checker": "isRussian"
+  },
+  "starting": {
+   "title": "Reasonix Studio запускается",
+   "note": "Ожидание готовности локальной службы. Это окно закроется автоматически."
+  },
+  "edit_menu": {
+   "edit": "Правка",
+   "undo": "Отменить",
+   "redo": "Повторить",
+   "cut": "Вырезать",
+   "copy": "Копировать",
+   "paste": "Вставить",
+   "selectAll": "Выделить всё",
+   "pasteAndMatchStyle": "Вставить и подстроить стиль",
+   "delete": "Удалить",
+   "substitutions": "Замены",
+   "showSubstitutions": "Показать замены",
+   "smartQuotes": "Умные кавычки",
+   "smartDashes": "Умные тире",
+   "textReplacement": "Замена текста",
+   "speech": "Диктовка",
+   "startSpeaking": "Начать диктовку",
+   "stopSpeaking": "Остановить диктовку"
+  },
+  "hostexit": {
+   "message": "В прошлый раз ядро неожиданно завершилось",
+   "ok": "ОК",
+   "detail": "Процесс ядра остановился во время прошлой сессии ({how}). Ваши сессии не затронуты. Чтобы сообщить о проблеме, приложите shell.log, host.log и папку crash из:\n\n{logsDir}"
+  },
+  "shelllog": {
+   "title": "Reasonix Studio не удалось запустить",
+   "detail": "{body}\n\nЖурналы находятся в:\n{logDir}",
+   "hints": {
+    "timeout": "Ядро запустилось, но не успело завершить запуск. Обычно причина — антивирус, сканирующий новую или обновлённую установку; повторный запуск Studio обычно помогает.",
+    "exited": "Процесс ядра остановился до готовности. Всё, что он вывел, показано выше; остальное — в host.log.",
+    "spawn": "Не удалось запустить программу ядра. Обычно причина — антивирус, блокирующий или удерживающий её."
+   }
+  },
+  "packagegrants": {
+   "title": "Reasonix Studio не удалось открыть окно",
+   "detail_before": "Файлы, загружаемые Reasonix Studio, содержат записи доступа, привязывающие их к конкретному пакету приложения Windows (AppContainer), и изолированные процессы Chromium завершаются при загрузке такого файла. Studio попыталась удалить их, но получила отказ для:\n\n",
+   "detail_more": "\n…и ещё {more}",
+   "detail_after": "\n\nЗапустите Reasonix Studio один раз от имени администратора — она удалит их сама."
+  },
+  "legacy": {
+   "buttons": [
+    "Переместить в корзину",
+    "Оставить"
+   ],
+   "message": "Найдена старая версия Reasonix Studio",
+   "detail": "{bundle}\n\nОна использует те же данные, что и текущая, поэтому оба значка открывают одно и то же окно. Перемещение в корзину не затронет ваши сессии и настройки."
+  },
+  "tray": {
+   "open": "Открыть Reasonix Studio",
+   "closeToTray": "Продолжать в фоне при закрытии",
+   "quit": "Выйти из Reasonix",
+   "idle": "Ничего не выполняется",
+   "attention": "{n} в ожидании",
+   "working": "{n} в работе",
+   "jobs": "{n} в фоне"
+  }
+ },
+ "push": {
+  "approval": [
+   "Действие требует вашего подтверждения",
+   "Reasonix на вашем компьютере ждёт вас."
+  ],
+  "input": [
+   "Модель ждёт вашего ответа",
+   "Reasonix на вашем компьютере не может продолжить без ответа."
+  ],
+  "error": [
+   "Ход завершился ошибкой",
+   "Один из ходов на вашем компьютере не завершился."
+  ],
+  "other": [
+   "Reasonix",
+   "На вашем компьютере что-то ждёт вас."
+  ]
+ },
+ "native_patches": [
+  {
+   "file": "uilang.js",
+   "reps": [
+    [
+     "lang",
+     "  if (want === \"zh\" || want === \"en\") return want;\n  return isChinese(machineLocale) ? \"zh\" : \"en\";",
+     "  if (want === \"zh\" || want === \"en\" || want === \"ru\") return want;\n  if (isRussian(machineLocale)) return \"ru\";\n  return isChinese(machineLocale) ? \"zh\" : \"en\";"
+    ],
+    [
+     "isRussian",
+     "module.exports = { uiLanguage };",
+     "function isRussian(tag) {\n  return String(tag ?? \"\").toLowerCase().startsWith(\"ru\");\n}\n\nmodule.exports = { uiLanguage };"
+    ]
+   ]
+  },
+  {
+   "file": "starting.js",
+   "reps": [
+    [
+     "text",
+     "  en: [\"Reasonix Studio is starting\", \"Waiting for the local service to be ready. This window will close automatically.\"],",
+     "  en: [\"Reasonix Studio is starting\", \"Waiting for the local service to be ready. This window will close automatically.\"],\n  ru: [\"Reasonix Studio запускается\", \"Ожидание готовности локальной службы. Это окно закроется автоматически.\"],"
+    ],
+    [
+     "pick",
+     "  const [title, note] = String(locale).toLowerCase().startsWith(\"zh\") ? TEXT.zh : TEXT.en;",
+     "  const loc = String(locale).toLowerCase();\n  const [title, note] = loc.startsWith(\"zh\") ? TEXT.zh : loc.startsWith(\"ru\") ? TEXT.ru : TEXT.en;"
+    ]
+   ]
+  },
+  {
+   "file": "editmenu.js",
+   "reps": [
+    [
+     "ru-block",
+     "  en: {\n    edit: \"Edit\",",
+     "  ru: {\n    edit: \"Правка\",\n    undo: \"Отменить\",\n    redo: \"Повторить\",\n    cut: \"Вырезать\",\n    copy: \"Копировать\",\n    paste: \"Вставить\",\n    selectAll: \"Выделить всё\",\n    pasteAndMatchStyle: \"Вставить и подстроить стиль\",\n    delete: \"Удалить\",\n    substitutions: \"Замены\",\n    showSubstitutions: \"Показать замены\",\n    smartQuotes: \"Умные кавычки\",\n    smartDashes: \"Умные тире\",\n    textReplacement: \"Замена текста\",\n    speech: \"Диктовка\",\n    startSpeaking: \"Начать диктовку\",\n    stopSpeaking: \"Остановить диктовку\",\n  },\n  en: {\n    edit: \"Edit\","
+    ]
+   ]
+  },
+  {
+   "file": "hostexit.js",
+   "reps": [
+    [
+     "ru",
+     "  return {\n    message: \"The kernel exited unexpectedly last time\",",
+     "  if (String(locale).toLowerCase().startsWith(\"ru\")) {\n    return {\n      message: \"В прошлый раз ядро неожиданно завершилось\",\n      ok: \"ОК\",\n      detail: `Процесс ядра остановился во время прошлой сессии (${how}). Ваши сессии не затронуты. Чтобы сообщить о проблеме, приложите shell.log, host.log и папку crash из:\\n\\n${logsDir}`,\n    };\n  }\n  return {\n    message: \"The kernel exited unexpectedly last time\","
+    ]
+   ]
+  },
+  {
+   "file": "shelllog.js",
+   "reps": [
+    [
+     "hints",
+     "const HINTS = {\n  timeout: [\n    \"The kernel started but did not finish starting in time. Security software scanning a new or updated install is a common cause; starting Studio again usually works.\",\n    \"内核已启动，但没有在限定时间内完成启动。安全软件扫描新安装或刚更新的程序是常见原因；再次启动通常可以。\",\n  ],\n  exited: [\n    \"The kernel process stopped before it was ready. Anything it printed is above; host.log has the rest.\",\n    \"内核进程在就绪前就停止了。它输出过的内容在上面，host.log 里有更多。\",\n  ],\n  spawn: [\n    \"The kernel program could not be run. Security software blocking or locking it is a common cause.\",\n    \"无法运行内核程序。安全软件拦截或占用它是常见原因。\",\n  ],\n};",
+     "const HINTS = {\n  timeout: [\n    \"The kernel started but did not finish starting in time. Security software scanning a new or updated install is a common cause; starting Studio again usually works.\",\n    \"内核已启动，但没有在限定时间内完成启动。安全软件扫描新安装或刚更新的程序是常见原因；再次启动通常可以。\",\n    \"Ядро запустилось, но не успело завершить запуск. Обычно причина — антивирус, сканирующий новую или обновлённую установку; повторный запуск Studio обычно помогает.\",\n  ],\n  exited: [\n    \"The kernel process stopped before it was ready. Anything it printed is above; host.log has the rest.\",\n    \"内核进程在就绪前就停止了。它输出过的内容在上面，host.log 里有更多。\",\n    \"Процесс ядра остановился до готовности. Всё, что он вывел, показано выше; остальное — в host.log.\",\n  ],\n  spawn: [\n    \"The kernel program could not be run. Security software blocking or locking it is a common cause.\",\n    \"无法运行内核程序。安全软件拦截或占用它是常见原因。\",\n    \"Не удалось запустить программу ядра. Обычно причина — антивирус, блокирующий или удерживающий её.\",\n  ],\n};"
+    ],
+    [
+     "pick",
+     "  const zh = String(locale).toLowerCase().startsWith(\"zh\");\n  const hint = HINTS[code]?.[zh ? 1 : 0];\n  const body = hint ? `${reason}\\n\\n${hint}` : reason;\n  if (zh) {\n    return { title: \"Reasonix Studio 无法启动\", detail: `${body}\\n\\n日志位于：\\n${logDir}` };\n  }",
+     "  const loc = String(locale).toLowerCase();\n  const zh = loc.startsWith(\"zh\");\n  const ru = loc.startsWith(\"ru\");\n  const hint = HINTS[code]?.[zh ? 1 : ru ? 2 : 0];\n  const body = hint ? `${reason}\\n\\n${hint}` : reason;\n  if (zh) {\n    return { title: \"Reasonix Studio 无法启动\", detail: `${body}\\n\\n日志位于：\\n${logDir}` };\n  }\n  if (ru) {\n    return { title: \"Reasonix Studio не удалось запустить\", detail: `${body}\\n\\nЖурналы находятся в:\\n${logDir}` };\n  }"
+    ]
+   ]
+  },
+  {
+   "file": "packagegrants.js",
+   "reps": [
+    [
+     "ru",
+     "  return {\n    title: \"Reasonix Studio could not open its window\",",
+     "  if (String(locale).toLowerCase().startsWith(\"ru\")) {\n    return {\n      title: \"Reasonix Studio не удалось открыть окно\",\n      detail:\n        \"Файлы, загружаемые Reasonix Studio, содержат записи доступа, привязывающие их к конкретному пакету приложения Windows (AppContainer), \" +\n        \"и изолированные процессы Chromium завершаются при загрузке такого файла. Studio попыталась удалить их, но получила отказ для:\\n\\n\" +\n        shown + (more > 0 ? `\\n…и ещё ${more}` : \"\") +\n        \"\\n\\nЗапустите Reasonix Studio один раз от имени администратора — она удалит их сама.\",\n    };\n  }\n  return {\n    title: \"Reasonix Studio could not open its window\","
+    ]
+   ]
+  },
+  {
+   "file": "main.js",
+   "reps": [
+    [
+     "legacy",
+     "        buttons: [\"移到废纸篓\", \"先留着\"],\n        defaultId: 0,\n        cancelId: 1,\n        message: \"找到一个旧版本的 Reasonix Studio\",\n        detail: `${bundle}\\n\\n它和当前这个共用同一份数据，所以两个图标打开的是同一个窗口。移到废纸篓不会动你的会话和设置。`,",
+     "        buttons: String(app.getLocale()).toLowerCase().startsWith(\"ru\") ? [\"Переместить в корзину\", \"Оставить\"] : [\"移到废纸篓\", \"先留着\"],\n        defaultId: 0,\n        cancelId: 1,\n        message: String(app.getLocale()).toLowerCase().startsWith(\"ru\") ? \"Найдена старая версия Reasonix Studio\" : \"找到一个旧版本的 Reasonix Studio\",\n        detail: String(app.getLocale()).toLowerCase().startsWith(\"ru\") ? `${bundle}\\n\\nОна использует те же данные, что и текущая, поэтому оба значка открывают одно и то же окно. Перемещение в корзину не затронет ваши сессии и настройки.` : `${bundle}\\n\\n它和当前这个共用同一份数据，所以两个图标打开的是同一个窗口。移到废纸篓不会动你的会话和设置。`,"
+    ]
+   ]
+  },
+  {
+   "file": "tray.js",
+   "reps": [
+    [
+     "ru-labels",
+     "    const line = state.fold?.line ?? \"\";\n    const words = state.fold?.labels ?? {};",
+     "    const fold = state.fold ?? {};\n    const bits = [];\n    if (fold.attention > 0) bits.push(`${fold.attention} в ожидании`);\n    if (fold.working > 0) bits.push(`${fold.working} в работе`);\n    if (fold.jobs > 0) bits.push(`${fold.jobs} в фоне`);\n    const line = bits.length ? bits.join(\" · \") : \"Ничего не выполняется\";\n    const words = {\n      open: \"Открыть Reasonix Studio\",\n      closeToTray: \"Продолжать в фоне при закрытии\",\n      quit: \"Выйти из Reasonix\",\n    };"
+    ]
+   ]
+  }
+ ]
+}

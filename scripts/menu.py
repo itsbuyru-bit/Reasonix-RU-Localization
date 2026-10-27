@@ -12,10 +12,14 @@ import paths
 
 SCRIPTS = os.path.dirname(os.path.abspath(__file__))
 LANG = "ru"
+PACK_CODE = "ru"
+PACK_DISPLAY = "Русский"
+PACK_DICT = paths.RU_DICT
+PROFILE = None
 
 STRINGS = {
     "ru": {
-        "title": "Русификация Reasonix Studio",
+        "title": "Локализация Reasonix Studio",
         "install": "Установка",
         "version": "Версия",
         "dictionary": "Словарь",
@@ -30,7 +34,7 @@ STRINGS = {
         ],
         "choice": "Выбор: ",
         "invalid": "Нет такого пункта.",
-        "no_dict": "Словарь translations/ru.json не найден или пуст.",
+        "no_dict": "Словарь языка не найден или пуст.",
         "no_dict_hint": "Сначала соберите перевод: пункт 5 меню.",
         "dict_lines": "Словарь: %d строк",
         "running": "Reasonix Studio запущен.",
@@ -49,7 +53,7 @@ STRINGS = {
         "rebuild_failed": "Перевод завершился с ошибками; повторный запуск досчитает пропуски.",
     },
     "en": {
-        "title": "Reasonix Studio Russian Localization",
+        "title": "Reasonix Studio Localization",
         "install": "Install",
         "version": "Version",
         "dictionary": "Dictionary",
@@ -117,7 +121,7 @@ def run(script, *args):
 
 
 def dictionary_ready():
-    data = common.read_json(paths.RU_DICT, {})
+    data = common.read_json(PACK_DICT, {})
     if not data:
         common.log(msg("no_dict"))
         common.log(msg("no_dict_hint"))
@@ -150,10 +154,10 @@ def require_closed():
 def apply_full():
     if not dictionary_ready() or not require_closed():
         return 1
-    code = run("inject_ru.py")
+    code = run("inject.py", "--lang", PACK_CODE)
     if code != 0:
         return code
-    return run("patch_asar_ru.py", "--install")
+    return run("patch_asar.py", "--lang", PACK_CODE, "--install")
 
 
 def apply_web():
@@ -161,37 +165,37 @@ def apply_web():
         return 1
     if paths.app_running():
         common.log(msg("running_web"))
-    return run("inject_ru.py")
+    return run("inject.py", "--lang", PACK_CODE)
 
 
 def verify():
-    code = run("verify_web.py")
+    code = run("verify_web.py", "--lang", PACK_CODE)
     if code != 0:
         return code
-    return run("patch_asar_ru.py", "--dry-run")
+    return run("patch_asar.py", "--lang", PACK_CODE, "--dry-run")
 
 
 def restore():
     if not require_closed():
         return 1
-    code = run("inject_ru.py", "--restore")
+    code = run("inject.py", "--lang", PACK_CODE, "--restore")
     if code != 0:
         return code
-    return run("patch_asar_ru.py", "--restore")
+    return run("patch_asar.py", "--lang", PACK_CODE, "--restore")
 
 
 def rebuild():
     code = run("extract_source.py")
     if code != 0:
         return code
-    code = run("translate_api.py", "--batch", "20", "--workers", "6")
+    code = run("translate_api.py", "--lang", PACK_CODE, "--batch", "20", "--workers", "6")
     if code != 0:
         common.log(msg("rebuild_failed"))
         return code
-    code = run("merge_parts.py", "--write")
+    code = run("merge_parts.py", "--lang", PACK_CODE, "--write")
     if code != 0:
         return code
-    return run("verify_web.py")
+    return run("verify_web.py", "--lang", PACK_CODE)
 
 
 def clear_cache():
@@ -200,8 +204,24 @@ def clear_cache():
     return run("clear_cache.py")
 
 
+def option_value(argv, name, default):
+    for i, arg in enumerate(argv):
+        if arg == name and i + 1 < len(argv):
+            return argv[i + 1]
+        if arg.startswith(name + "="):
+            return arg.split("=", 1)[1]
+    return default
+
+
 def main():
-    choose_language(sys.argv[1:])
+    global PACK_CODE, PACK_DISPLAY, PACK_DICT, PROFILE
+    argv = sys.argv[1:]
+    profile = paths.load_profile(option_value(argv, "--lang", "ru"))
+    PROFILE = profile
+    PACK_CODE = profile["code"]
+    PACK_DISPLAY = profile["display"]
+    PACK_DICT = paths.profile_dictionary(profile)
+    choose_language(argv)
     common.log("=" * 52)
     common.log("  " + msg("title"))
     common.log("=" * 52)
@@ -215,7 +235,7 @@ def main():
     except SystemExit as error:
         common.log(str(error))
         return 1
-    common.log("%s:   %s" % (msg("dictionary"), paths.RU_DICT))
+    common.log("%s:   %s" % (msg("dictionary"), PACK_DICT))
 
     if not ensure_closed_at_start():
         return 0
@@ -250,7 +270,7 @@ def main():
 
         if code == 0:
             common.log("\n" + msg("done"))
-            common.log(msg("restart"))
+            common.log(msg("restart").replace("Русский", PACK_DISPLAY))
         else:
             common.log("\n" + msg("error", code))
         input("\n" + msg("press_enter"))

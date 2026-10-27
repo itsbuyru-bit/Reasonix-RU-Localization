@@ -62,11 +62,16 @@ def read(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--app", help="каталог установки (по умолчанию найденный)")
-    parser.add_argument("--dict", help="словарь для проверки (по умолчанию тестовый)")
+    parser.add_argument("--dict", help="словарь для проверки (по умолчанию из профиля)")
+    parser.add_argument("--lang", default="ru", help="код языка из languages/<code>.json")
     args = parser.parse_args()
     if args.app:
         os.environ["REASONIX_STUDIO_DIR"] = os.path.abspath(args.app)
 
+    profile = paths.load_profile(args.lang)
+    code = profile["code"]
+    display = profile["display"]
+    marker = "[`%s`,`%s`]" % (code, display)
     paths.ensure_work()
     test_app = os.path.join(paths.TEST, "app")
     test_backup = os.path.join(paths.TEST, "backup")
@@ -113,9 +118,9 @@ def main():
             common.log("  исходный %s взят из backup" % os.path.basename(target))
 
     pristine = (
-        "__RU" not in read(originals["i18n"])
-        and "[`ru`,`Русский`]" not in read(originals["settings"])
-        and 'p === "ru"' not in read(originals["index"])
+        profile["global"] not in read(originals["i18n"])
+        and marker not in read(originals["settings"])
+        and ('p === "%s"' % code) not in read(originals["index"])
         and "pickLanguage" not in read(originals["push"])
     )
     if not pristine:
@@ -125,15 +130,17 @@ def main():
 
     dictionary = args.dict
     if not dictionary:
-        dictionary = os.path.join(paths.TEST, "ru-test.json")
-        common.write_json(dictionary, TEST_DICT, indent=1)
+        dictionary = paths.profile_dictionary(profile)
+        if not os.path.isfile(dictionary):
+            dictionary = os.path.join(paths.TEST, "%s-test.json" % code)
+            common.write_json(dictionary, TEST_DICT, indent=1)
     values = common.read_json(dictionary, {})
 
     common.log("\n== инъекция в копию")
     run(
         [sys.executable, os.path.join(paths.SCRIPTS, "inject_ru.py"),
          "--app", test_app, "--dict", dictionary, "--backup-dir", test_backup,
-         "--allow-running"]
+         "--allow-running", "--lang", args.lang]
     )
 
     bundle = originals["i18n"]
@@ -148,21 +155,25 @@ def main():
         key,
         expected,
         placeholder_key,
+        code,
     ])
 
     common.log("\n== проверка Settings, index.html и push-sw.js")
-    if "[`ru`,`Русский`]" not in read(originals["settings"]):
-        raise SystemExit("в Settings нет корректного пункта «Русский»")
-    if 'p === "ru"' not in read(originals["index"]):
+    if marker not in read(originals["settings"]):
+        raise SystemExit("в Settings нет корректного пункта «%s»" % display)
+    if ('p === "%s"' % code) not in read(originals["index"]):
         raise SystemExit("index.html не пропатчен")
-    if "ru: {" not in read(originals["push"]) or "pickLanguage" not in read(originals["push"]):
+    if ("%s: {" % code) not in read(originals["push"]) or "pickLanguage" not in read(originals["push"]):
         raise SystemExit("push-sw.js не пропатчен")
-    common.log("  OK пункт «Русский»")
+    common.log("  OK пункт «%s»" % display)
     common.log("  OK язык экрана запуска")
-    common.log("  OK русские push-уведомления")
+    common.log("  OK push-уведомления языка")
 
-    common.log("\n== проверка push-уведомлений")
-    run(["node", os.path.join(paths.SCRIPTS, "verify_push_sw.mjs"), originals["push"]])
+    if code == "ru":
+        common.log("\n== проверка push-уведомлений")
+        run(["node", os.path.join(paths.SCRIPTS, "verify_push_sw.mjs"), originals["push"]])
+    else:
+        common.log("\n== проверка push-уведомлений: пропущена для %s" % code)
 
     if pristine:
         common.log("\n== проверка отката")
@@ -177,7 +188,7 @@ def main():
 
         run([sys.executable, os.path.join(paths.SCRIPTS, "inject_ru.py"),
              "--app", test_app, "--restore", "--backup-dir", test_backup,
-             "--allow-running"])
+             "--allow-running", "--lang", args.lang])
         for tag, target in originals.items():
             if digest(target) != original_hashes[tag]:
                 raise SystemExit("откат не восстановил %s" % tag)

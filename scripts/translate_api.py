@@ -29,6 +29,8 @@ import paths
 
 API_URL = "https://api.deepseek.com/chat/completions"
 DEFAULT_MODEL = "deepseek-v4-pro"
+TARGET_LANGUAGE = "Russian"
+PARTS = paths.PARTS
 CJK = re.compile(r"[\u4e00-\u9fff]")
 FULLWIDTH = re.compile(r"[（）「」『』、，。：；！？…—·]")
 
@@ -77,6 +79,11 @@ STRICT RULES
 GLOSSARY
 {GLOSSARY}
 """
+
+
+def system_for(target, glossary):
+    return SYSTEM.replace("into Russian", "into %s" % target).replace(GLOSSARY, glossary)
+
 
 
 def load_key():
@@ -151,7 +158,7 @@ def parse_response(content, expected):
 
 def call_api(key, model, rows, timeout=180):
     lines = [prompt_line(i, row) for i, row in enumerate(rows, 1)]
-    user = "Translate these %d interface strings into Russian:\n%s" % (len(rows), "\n".join(lines))
+    user = "Translate these %d interface strings into %s:\n%s" % (len(rows), TARGET_LANGUAGE, "\n".join(lines))
     body = json.dumps(
         {
             "model": model,
@@ -225,12 +232,12 @@ def _merge_usage(a, b):
 
 def load_done():
     done = {}
-    if not os.path.isdir(paths.PARTS):
+    if not os.path.isdir(PARTS):
         return done
-    for name in sorted(os.listdir(paths.PARTS)):
+    for name in sorted(os.listdir(PARTS)):
         if not name.startswith("part_") or not name.endswith(".json"):
             continue
-        data = common.read_json(os.path.join(paths.PARTS, name), {})
+        data = common.read_json(os.path.join(PARTS, name), {})
         if isinstance(data, dict):
             for zh, ru in data.items():
                 if isinstance(ru, str) and ru:
@@ -241,7 +248,7 @@ def load_done():
 def write_part(start, mapping):
     if not mapping:
         return
-    path = os.path.join(paths.PARTS, "part_%05d.json" % start)
+    path = os.path.join(PARTS, "part_%05d.json" % start)
     existing = common.read_json(path, {})
     if not isinstance(existing, dict):
         existing = {}
@@ -249,15 +256,24 @@ def write_part(start, mapping):
     common.write_json(path, dict(sorted(existing.items())), indent=0)
 
 
-def main():
+def main(argv=None):
+    global SYSTEM, PARTS, TARGET_LANGUAGE
     parser = argparse.ArgumentParser()
+    parser.add_argument("--lang", default="ru", help="код языка из languages/<code>.json")
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--batch", type=int, default=25)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--limit", type=int, default=0, help="перевести не более N строк (для проверки)")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     paths.ensure_work()
+    profile = paths.load_profile(args.lang)
+    TARGET_LANGUAGE = profile.get("target_language") or "Russian"
+    glossary = profile.get("glossary") or "Keep product names, code identifiers and placeholders unchanged."
+    SYSTEM = system_for(TARGET_LANGUAGE, glossary)
+    PARTS = paths.parts_dir(profile["code"])
+    os.makedirs(PARTS, exist_ok=True)
+    common.log("Язык: %s (%s)" % (profile["display"], profile["code"]))
     data = common.read_json(paths.SOURCE)
     if not data:
         raise SystemExit("Нет %s — сначала запустите scripts/extract_source.py" % paths.SOURCE)

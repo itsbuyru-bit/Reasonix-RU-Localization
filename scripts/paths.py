@@ -12,6 +12,8 @@ ROOT = os.path.dirname(SCRIPTS)
 
 TRANSLATIONS = os.path.join(ROOT, "translations")
 RU_DICT = os.path.join(TRANSLATIONS, "ru.json")
+LANGUAGES = os.path.join(ROOT, "languages")
+DEFAULT_LANG = "ru"
 REFERENCE = os.path.join(ROOT, "reference")
 FR_REFERENCE = os.path.join(REFERENCE, "fr.json")
 
@@ -137,6 +139,54 @@ def settings_bundle():
 def ensure_work():
     for d in (WORK, PARTS, BACKUP, TEST, ASAR_WORK, ASAR_TOOLS):
         os.makedirs(d, exist_ok=True)
+
+
+def profile_path(code):
+    return os.path.join(LANGUAGES, code + ".json")
+
+
+def load_profile(code=DEFAULT_LANG):
+    import json
+
+    path = profile_path(code)
+    if not os.path.isfile(path):
+        raise SystemExit("Языковой профиль не найден: %s" % path)
+    with open(path, encoding="utf-8") as f:
+        profile = json.load(f)
+    for field in ("code", "display", "global", "dictionary", "native", "push"):
+        if field not in profile:
+            raise SystemExit("В профиле %s нет поля %s" % (path, field))
+    if not str(profile["global"]).startswith("__"):
+        raise SystemExit("Поле global в %s должно начинаться с __" % path)
+    return profile
+
+
+def list_profiles():
+    profiles = []
+    if not os.path.isdir(LANGUAGES):
+        return profiles
+    for name in sorted(os.listdir(LANGUAGES)):
+        if not name.endswith(".json") or name.startswith("_"):
+            continue
+        code = name[:-5]
+        try:
+            profiles.append(load_profile(code))
+        except SystemExit:
+            continue
+    return profiles
+
+
+def profile_dictionary(profile):
+    return os.path.join(ROOT, profile["dictionary"])
+
+
+def profile_overrides(profile):
+    path = profile.get("overrides")
+    return os.path.join(ROOT, path) if path else ""
+
+
+def parts_dir(code):
+    return os.path.join(WORK, code + "_parts")
 
 
 def app_running():

@@ -31,6 +31,19 @@ LANG = "ru"
 GLOBAL = "__RU"
 DISPLAY = "Русский"
 BACKUP_ROOT = paths.BACKUP
+PUSH = {}
+
+
+def configure(profile):
+    """Применяет языковой профиль к шаблонам патчей."""
+    global LANG, GLOBAL, DISPLAY, PUSH
+    LANG = profile["code"]
+    GLOBAL = profile["global"]
+    DISPLAY = profile["display"]
+    PUSH = profile["push"]
+    if LANG in ("en", "zh"):
+        raise SystemExit("Код языка en/zh зарезервирован самим Reasonix.")
+
 
 PUSH_TEXT_OLD = """  en: {
     approval: ["An action needs your approval", "Reasonix on your computer is waiting for you."],
@@ -39,35 +52,46 @@ PUSH_TEXT_OLD = """  en: {
     other: ["Reasonix", "Something on your computer is waiting for you."],
   },"""
 
-PUSH_TEXT_NEW = """  ru: {
-    approval: ["Действие требует вашего подтверждения", "Reasonix на вашем компьютере ждёт вас."],
-    input: ["Модель ждёт вашего ответа", "Reasonix на вашем компьютере не может продолжить без ответа."],
-    error: ["Ход завершился ошибкой", "Один из ходов на вашем компьютере не завершился."],
-    other: ["Reasonix", "На вашем компьютере что-то ждёт вас."],
-  },
-  en: {
-    approval: ["An action needs your approval", "Reasonix on your computer is waiting for you."],
-    input: ["The model is waiting for your answer", "Reasonix on your computer needs an answer to go on."],
-    error: ["A turn ended with an error", "A turn on your computer did not finish."],
-    other: ["Reasonix", "Something on your computer is waiting for you."],
-  },"""
+
+def push_text_new():
+    lines = ["  %s: {" % LANG]
+    for key in ("approval", "input", "error", "other"):
+        pair = PUSH.get(key) or []
+        if len(pair) != 2:
+            raise SystemExit("В профиле push.%s должно быть ровно две строки." % key)
+        lines.append("    %s: [%s, %s]," % (
+            key,
+            json.dumps(pair[0], ensure_ascii=False),
+            json.dumps(pair[1], ensure_ascii=False),
+        ))
+    lines.append("  },")
+    return "\n".join(lines) + "\n" + PUSH_TEXT_OLD
+
 
 PUSH_LANG_OLD = """function describe(data) {
   const language = /^zh/i.test(self.navigator.language || "") ? "zh" : "en";"""
 
-PUSH_LANG_NEW = """function pickLanguage() {
+
+def push_lang_new():
+    code = json.dumps(LANG, ensure_ascii=False)
+    return """function pickLanguage() {
   const tags = [self.navigator.language, ...(self.navigator.languages || [])].filter(Boolean);
   for (const tag of tags) {
     const low = String(tag).toLowerCase();
     if (low.startsWith("zh") || low.startsWith("yue") || low.startsWith("cmn")) return "zh";
-    if (low.startsWith("ru")) return "ru";
+    if (low.startsWith(%s)) return %s;
     if (low.startsWith("en")) return "en";
   }
   return "en";
 }
 
 function describe(data) {
-  const language = pickLanguage();"""
+  const language = pickLanguage();""" % (code, code)
+
+
+configure(paths.load_profile(paths.DEFAULT_LANG))
+PUSH_TEXT_NEW = push_text_new()
+PUSH_LANG_NEW = push_lang_new()
 
 
 def patches_247():
@@ -157,8 +181,8 @@ def detect_i18n(text):
 
 def push_patches():
     return [
-        ("P1_ru_text", PUSH_TEXT_OLD, PUSH_TEXT_NEW),
-        ("P2_language", PUSH_LANG_OLD, PUSH_LANG_NEW),
+        ("P1_text", PUSH_TEXT_OLD, push_text_new()),
+        ("P2_language", PUSH_LANG_OLD, push_lang_new()),
     ]
 
 
@@ -207,6 +231,11 @@ def apply_replacements(text, reps, dry):
 
 def patch_i18n(path, dictionary, dry):
     text = read(path)
+    other = [x for x in re.findall(r";globalThis\.(__[A-Za-z0-9_]+)=", text) if x != GLOBAL]
+    if other:
+        raise SystemExit(
+            "Бандл уже локализован другим языком (%s). Восстановите его из backup." % ", ".join(other)
+        )
     payload = json.dumps(dictionary, ensure_ascii=False, separators=(",", ":"))
     dict_var, reps = detect_i18n(text)
 
@@ -227,14 +256,14 @@ def patch_i18n(path, dictionary, dry):
             GLOBAL,
         )
         if not pattern.search(text):
-            raise SystemExit("Найден маркер __RU, но блок словаря не читается. Восстановите файл из backup.")
+            raise SystemExit("Найден маркер %s, но блок словаря не читается. Восстановите файл из backup." % GLOBAL)
         text = pattern.sub(lambda _m: new_block, text, count=1)
         common.log("  словарь обновлён: %d строк" % len(dictionary))
         return text, ["dictionary_update"]
 
     if "globalThis.%s" % GLOBAL in text:
         raise SystemExit(
-            "Бандл выглядит частично пропатченным (есть __RU без блока словаря). "
+            "Бандл выглядит частично пропатченным (есть %s без блока словаря). " % GLOBAL +
             "Восстановите его из work/backup и повторите."
         )
 
@@ -292,7 +321,7 @@ def patch_settings(path, dry):
 def patch_index(path, dry):
     text = read(path)
     old = 'document.documentElement.lang = zh ? "zh-CN" : "en";'
-    new = 'document.documentElement.lang = p === "ru" ? "ru" : (zh ? "zh-CN" : "en");'
+    new = 'document.documentElement.lang = p === "%s" ? "%s" : (zh ? "zh-CN" : "en");' % (LANG, LANG)
     if new in text:
         common.log("  index.html уже пропатчен")
         return text, False
@@ -308,9 +337,11 @@ def patch_index(path, dry):
 
 def patch_push_sw(path, dry):
     text = read(path)
-    if "ru: {" in text and "pickLanguage" in text:
+    if "  %s: {" % LANG in text and "pickLanguage" in text:
         common.log("  push-sw.js уже пропатчен")
         return text, False
+    if "pickLanguage" in text:
+        raise SystemExit("push-sw.js уже локализован другим языком. Восстановите его из backup.")
     orig = text
     for name, old, new in push_patches():
         count = text.count(old)
@@ -361,17 +392,18 @@ def restore():
         common.log("Нечего восстанавливать.")
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--app", help="каталог установки Reasonix Studio")
-    parser.add_argument("--dict", default=paths.RU_DICT, help="словарь ru.json")
+    parser.add_argument("--lang", default="ru", help="код языка из languages/<code>.json")
+    parser.add_argument("--dict", default=None, help="словарь (по умолчанию из профиля)")
     parser.add_argument("--backup-dir", help="каталог резервных копий (для тестов)")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--restore", action="store_true")
     parser.add_argument("--allow-running", action="store_true",
                         help="разрешить запись при запущенном Studio (не рекомендуется)")
     parser.add_argument("--allow-version-mismatch", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     global BACKUP_ROOT
     if args.backup_dir:
@@ -379,6 +411,10 @@ def main():
 
     if args.app:
         os.environ["REASONIX_STUDIO_DIR"] = os.path.abspath(args.app)
+
+    profile = paths.load_profile(args.lang)
+    configure(profile)
+    default_dict = paths.profile_dictionary(profile)
 
     if args.restore:
         require_closed(args.allow_running)
@@ -389,6 +425,7 @@ def main():
     version = paths.app_version() or "unknown"
     common.log("Reasonix Studio: %s" % paths.app_dir())
     common.log("Версия: %s" % version)
+    common.log("Язык: %s (%s)" % (DISPLAY, LANG))
     if not (str(version).startswith("2.47") or str(version).startswith("2.52") or str(version).startswith("2.53")):
         common.log(
             "! Версия %s не проверялась. Якоря будут проверены; "
@@ -402,14 +439,15 @@ def main():
         else:
             require_closed(False)
 
-    dictionary = common.read_json(args.dict, {})
+    dictionary_path = args.dict or default_dict
+    dictionary = common.read_json(dictionary_path, {})
     if not dictionary:
         if args.dry_run:
             common.log("! Словарь не найден: dry-run проверяет только якоря")
             dictionary = {}
         else:
-            raise SystemExit("Словарь пуст или не найден: " + args.dict)
-    common.log("Словарь: %s (%d строк)" % (args.dict, len(dictionary)))
+            raise SystemExit("Словарь пуст или не найден: " + dictionary_path)
+    common.log("Словарь: %s (%d строк)" % (dictionary_path, len(dictionary)))
 
     i18n = paths.i18n_bundle()
     settings = paths.settings_bundle()
@@ -469,11 +507,11 @@ def main():
     # Финальная проверка установленных файлов.
     installed = read(i18n)
     checks = {
-        "словарь __RU": ";globalThis.%s=" % GLOBAL in installed,
-        "словарь ru": (".%s=globalThis.%s" % (LANG, GLOBAL)) in installed,
+        "словарь %s" % GLOBAL: ";globalThis.%s=" % GLOBAL in installed,
+        "словарь %s" % LANG: (".%s=globalThis.%s" % (LANG, GLOBAL)) in installed,
         "пункт в Settings": ("%s%s%s,%s%s%s" % (BT, LANG, BT, BT, DISPLAY, BT)) in read(settings),
-        "язык index.html": 'p === "ru"' in read(index),
-        "push-уведомления": "ru: {" in read(push) and "pickLanguage" in read(push),
+        "язык index.html": ('p === "%s"' % LANG) in read(index),
+        "push-уведомления": ("%s: {" % LANG) in read(push) and "pickLanguage" in read(push),
     }
     common.log("")
     for label, ok in checks.items():

@@ -29,6 +29,7 @@ installation, keeps versioned backups, and can roll every change back.
 - [Quick start](#quick-start)
 - [Menu reference](#menu-reference)
 - [How it works](#how-it-works)
+- [Adding another language](#adding-another-language)
 - [Manual commands](#manual-commands)
 - [Updating after a Reasonix release](#updating-after-a-reasonix-release)
 - [Troubleshooting](#troubleshooting)
@@ -258,6 +259,27 @@ touched.
 
 ---
 
+## Adding another language
+
+The toolchain is not Russian-only. A language is a profile plus a dictionary;
+no Python changes are required. The repository includes a Chinese → English
+template and a generator for the native Electron strings.
+
+- `languages/_template.json` — profile template: code, display name, dictionary
+  paths, native and push strings, glossary.
+- `translations/_template.json` — 5,201 Chinese keys with English values.
+- `py scripts\build_native_patches.py --lang de` — build native JS blocks from
+  the profile.
+- `py scripts\verify_web.py --lang de` — verify on a copy.
+- `py scripts\inject.py --lang de` and
+  `py scripts\patch_asar.py --lang de --install` — apply.
+- `LOCALIZE.bat --lang de` — menu for that language pack.
+
+Full guide: [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md).
+
+The old `inject_ru.py`, `patch_asar_ru.py` and `LOCALIZE-RU.bat` remain Russian
+defaults for backward compatibility.
+
 ## Manual commands
 
 ```bat
@@ -454,7 +476,8 @@ Run the update procedure (menu option 5) to translate them.
 
 ```text
 Reasonix-RU-Localization/
-├── LOCALIZE-RU.bat              # bilingual menu launcher
+├── LOCALIZE-RU.bat              # Russian default launcher
+├── LOCALIZE.bat                 # language-pack launcher
 ├── README.md                    # English (default)
 ├── README.ru.md                 # Russian
 ├── LICENSE
@@ -465,13 +488,18 @@ Reasonix-RU-Localization/
 ├── CODE_OF_CONDUCT.md
 ├── SECURITY.md
 ├── SUPPORT.md
+├── languages/
+│   ├── ru.json                  # Russian profile + native/push strings
+│   └── _template.json           # English template (code "xx")
 ├── translations/
 │   ├── ru.json                  # 5,201 Russian strings
-│   └── ru_overrides.json        # targeted corrections
+│   ├── ru_overrides.json        # targeted corrections
+│   ├── _template.json           # 5,201 Chinese keys → English values
+│   └── _template_overrides.json
 ├── reference/
 │   └── fr.json                  # French reference (MIT), for cross-checks
 ├── scripts/
-│   ├── paths.py                 # install detection and paths
+│   ├── paths.py                 # install detection, profiles, paths
 │   ├── common.py                # JSON, placeholders, checks
 │   ├── extract_source.py        # read the installed bundle
 │   ├── extract_bundle.mjs       # evaluate the minified bundle
@@ -479,17 +507,22 @@ Reasonix-RU-Localization/
 │   ├── merge_parts.py           # merge and validate the dictionary
 │   ├── review_terms.py          # terminology review report
 │   ├── build_overrides.py       # regenerate ru_overrides.json
-│   ├── inject_ru.py             # web + push injection
-│   ├── native_strings.py        # Russian native strings
-│   ├── patch_asar_ru.py         # build/install app.asar
+│   ├── inject.py                # generic web + push injection
+│   ├── inject_ru.py             # Russian wrapper
+│   ├── native_patches.py        # native JS blocks from profile.native
+│   ├── build_native_patches.py  # write native_patches into a profile
+│   ├── native_strings.py        # profile-aware native patch loader
+│   ├── patch_asar.py            # generic app.asar patcher
+│   ├── patch_asar_ru.py         # Russian wrapper
 │   ├── vendor_asar.py           # install @electron/asar
 │   ├── verify_web.py            # integration test on a copy
-│   ├── verify_bundle.mjs        # ESM ru/en/zh test
+│   ├── verify_bundle.mjs        # ESM language test
 │   ├── verify_push_sw.mjs       # service-worker VM test
 │   ├── clear_cache.py           # safe Chromium cache reset
-│   └── menu.py                  # bilingual menu
+│   └── menu.py                  # bilingual menu, --lang
 ├── tests/                       # unit tests and dictionary checks
-├── docs/                        # architecture, translation, troubleshooting
+├── docs/                        # architecture, translation, troubleshooting,
+│                                # ADDING-A-LANGUAGE.md
 ├── .github/                     # CI, issue templates, PR template
 └── work/                        # generated at runtime, not committed
 ```

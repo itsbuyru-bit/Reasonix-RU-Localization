@@ -20,6 +20,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common
 import paths
 
+PARTS = paths.PARTS
+DICTIONARY = paths.RU_DICT
 OVERRIDES = os.path.join(paths.TRANSLATIONS, "ru_overrides.json")
 
 
@@ -27,7 +29,7 @@ def load_parts():
     merged = {}
     conflicts = []
     sources = collections.defaultdict(list)
-    for file in sorted(glob.glob(os.path.join(paths.PARTS, "part_*.json"))):
+    for file in sorted(glob.glob(os.path.join(PARTS, "part_*.json"))):
         data = common.read_json(file, {})
         if not isinstance(data, dict):
             continue
@@ -42,11 +44,18 @@ def load_parts():
     return merged, conflicts, sources
 
 
-def main():
+def main(argv=None):
+    global PARTS, DICTIONARY, OVERRIDES
     parser = argparse.ArgumentParser()
-    parser.add_argument("--write", action="store_true", help="записать translations/ru.json")
+    parser.add_argument("--lang", default="ru", help="код языка из languages/<code>.json")
+    parser.add_argument("--write", action="store_true", help="записать словарь языка")
     parser.add_argument("--allow-partial", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+
+    profile = paths.load_profile(args.lang)
+    PARTS = paths.parts_dir(profile["code"])
+    DICTIONARY = paths.profile_dictionary(profile)
+    OVERRIDES = paths.profile_overrides(profile)
 
     data = common.read_json(paths.SOURCE)
     if not data:
@@ -163,8 +172,8 @@ def main():
             common.log("\nНе записываю translations/ru.json: сначала устраните ошибки "
                        "(или используйте --allow-partial).")
             raise SystemExit(1)
-        common.write_json(paths.RU_DICT, result, indent=0)
-        common.log("\nЗаписано: %s (%d строк)" % (paths.RU_DICT, len(result)))
+        common.write_json(DICTIONARY, result, indent=0)
+        common.log("\nЗаписано: %s (%d строк)" % (DICTIONARY, len(result)))
 
     if fatal:
         raise SystemExit(1)

@@ -29,6 +29,7 @@ Electron и push-уведомления PWA.
 - [Быстрый старт](#быстрый-старт)
 - [Меню](#меню)
 - [Как это работает](#как-это-работает)
+- [Добавление другого языка](#добавление-другого-языка)
 - [Ручные команды](#ручные-команды)
 - [Обновление Reasonix](#обновление-reasonix)
 - [Если что-то не работает](#если-что-то-не-работает)
@@ -244,6 +245,28 @@ Chromium (`Cache`, `Code Cache`, `GPUCache` и подобные). Настрой
 
 ---
 
+## Добавление другого языка
+
+Инструмент не привязан к русскому. Новый язык — это профиль и словарь, без
+правки Python-кода. В репозитории есть шаблон «китайский → английский» и
+генератор нативных строк Electron.
+
+- `languages/_template.json` — шаблон профиля: код, отображаемое имя, пути к
+  словарю, нативные и push-строки, глоссарий.
+- `translations/_template.json` — 5 201 китайский ключ со значениями на
+  английском.
+- `py scripts\build_native_patches.py --lang de` — собрать нативные JS-блоки
+  из профиля.
+- `py scripts\verify_web.py --lang de` — проверить на копии.
+- `py scripts\inject.py --lang de` и
+  `py scripts\patch_asar.py --lang de --install` — применить.
+- `LOCALIZE.bat --lang de` — меню для выбранного языка.
+
+Подробная инструкция: [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md).
+
+Старые `inject_ru.py`, `patch_asar_ru.py` и `LOCALIZE-RU.bat` остаются
+русскими значениями по умолчанию для совместимости.
+
 ## Ручные команды
 
 ```bat
@@ -438,7 +461,8 @@ Service worker не читает язык приложения. Он следу�
 
 ```text
 Reasonix-RU-Localization/
-├── LOCALIZE-RU.bat              # двуязычное меню
+├── LOCALIZE-RU.bat              # русский лаунчер по умолчанию
+├── LOCALIZE.bat                 # лаунчер языковых профилей
 ├── README.md                    # английский (по умолчанию)
 ├── README.ru.md                 # русский
 ├── LICENSE
@@ -449,9 +473,14 @@ Reasonix-RU-Localization/
 ├── CODE_OF_CONDUCT.md
 ├── SECURITY.md
 ├── SUPPORT.md
+├── languages/
+│   ├── ru.json                  # русский профиль + native/push
+│   └── _template.json           # английский шаблон (код "xx")
 ├── translations/
 │   ├── ru.json                  # 5 201 русская строка
-│   └── ru_overrides.json        # точечные исправления
+│   ├── ru_overrides.json        # точечные исправления
+│   ├── _template.json           # 5 201 китайский ключ → английские значения
+│   └── _template_overrides.json
 ├── reference/
 │   └── fr.json                  # французский эталон (MIT) для сверки
 ├── scripts/
@@ -463,17 +492,22 @@ Reasonix-RU-Localization/
 │   ├── merge_parts.py           # собрать и проверить словарь
 │   ├── review_terms.py          # отчёт по терминологии
 │   ├── build_overrides.py       # пересобрать ru_overrides.json
-│   ├── inject_ru.py             # веб-часть и push
-│   ├── native_strings.py        # русские строки нативного слоя
-│   ├── patch_asar_ru.py         # собрать/установить app.asar
+│   ├── inject.py                # универсальная веб-часть и push
+│   ├── inject_ru.py             # русская обёртка
+│   ├── native_patches.py        # нативные JS-блоки из profile.native
+│   ├── build_native_patches.py  # записать native_patches в профиль
+│   ├── native_strings.py        # загрузчик нативных патчей профиля
+│   ├── patch_asar.py            # универсальный патчер app.asar
+│   ├── patch_asar_ru.py         # русская обёртка
 │   ├── vendor_asar.py           # поставить @electron/asar
 │   ├── verify_web.py            # интеграционный тест на копии
-│   ├── verify_bundle.mjs        # тест ru/en/zh через ESM
+│   ├── verify_bundle.mjs        # тест языка через ESM
 │   ├── verify_push_sw.mjs       # тест service worker в VM
 │   ├── clear_cache.py           # безопасный сброс кэша Chromium
-│   └── menu.py                  # двуязычное меню
+│   └── menu.py                  # двуязычное меню, --lang
 ├── tests/                       # unit-тесты и проверки словаря
-├── docs/                        # архитектура, перевод, troubleshooting
+├── docs/                        # архитектура, перевод, troubleshooting,
+│                                # ADDING-A-LANGUAGE.md
 ├── .github/                     # CI, шаблоны issue и PR
 └── work/                        # генерируется, не коммитится
 ```

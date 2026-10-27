@@ -70,9 +70,9 @@ def clean_dir(path):
     os.makedirs(path, exist_ok=True)
 
 
-def apply_patches(src):
+def apply_patches(src, patches):
     missed = []
-    for item in native_strings.PATCHES:
+    for item in patches:
         path = os.path.join(src, "src", item["file"])
         if not os.path.isfile(path):
             missed.append((item["file"], "файл", 0))
@@ -80,6 +80,9 @@ def apply_patches(src):
         text = open(path, encoding="utf-8").read()
         for tag, old, new in item["reps"]:
             count = text.count(old)
+            if count == 0 and new in text:
+                common.log("  = %-16s %s (уже)" % (item["file"], tag))
+                continue
             if count != 1:
                 missed.append((item["file"], tag, count))
                 continue
@@ -105,24 +108,15 @@ def check_syntax(src):
     common.log("  синтаксис: OK (%d файлов)" % len(FILES))
 
 
-def verify(src):
-    checks = {
-        "uilang.js: ru": ("uilang.js", "isRussian"),
-        "starting.js: ru": ("starting.js", "TEXT.ru"),
-        "editmenu.js: Правка": ("editmenu.js", "Правка"),
-        "hostexit.js: ядро": ("hostexit.js", "В прошлый раз ядро"),
-        "shelllog.js: журналы": ("shelllog.js", "Журналы находятся"),
-        "packagegrants.js: окно": ("packagegrants.js", "не удалось открыть окно"),
-        "main.js: корзина": ("main.js", "Переместить в корзину"),
-        "tray.js: выход": ("tray.js", "Выйти из Reasonix"),
-    }
+def verify(src, patches):
     ok = True
-    for label, (name, needle) in checks.items():
-        path = os.path.join(src, "src", name)
+    for item in patches:
+        path = os.path.join(src, "src", item["file"])
         text = open(path, encoding="utf-8").read() if os.path.isfile(path) else ""
-        good = needle in text
-        common.log("  %s %s" % ("OK " if good else "!! ", label))
-        ok = ok and good
+        for tag, old, new in item["reps"]:
+            good = new in text
+            common.log("  %s %s:%s" % ("OK " if good else "!! ", item["file"], tag))
+            ok = ok and good
     return ok
 
 
@@ -173,14 +167,15 @@ def install(packed):
     common.log("app.asar заменён (backup: %s)" % os.path.basename(backup))
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--app", help="каталог установки Reasonix Studio")
+    parser.add_argument("--lang", default="ru", help="код языка из languages/<code>.json")
     parser.add_argument("--dry-run", action="store_true", help="собрать, проверить, не устанавливать")
     parser.add_argument("--install", action="store_true", help="заменить app.asar (нужно закрыть приложение)")
     parser.add_argument("--restore", action="store_true")
     parser.add_argument("--allow-version-mismatch", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.app:
         os.environ["REASONIX_STUDIO_DIR"] = os.path.abspath(args.app)
@@ -189,10 +184,14 @@ def main():
         restore()
         return
 
+    profile = paths.load_profile(args.lang)
+    patches = native_strings.patches(profile)
+
     paths.ensure_work()
     version = paths.app_version() or "unknown"
     common.log("Reasonix Studio: %s" % paths.app_dir())
     common.log("Версия: %s" % version)
+    common.log("Язык: %s (%s)" % (profile["display"], profile["code"]))
     if not (str(version).startswith("2.47") or str(version).startswith("2.52") or str(version).startswith("2.53")):
         common.log(
             "! Версия %s не проверялась. Якоря будут проверены; "
@@ -203,19 +202,19 @@ def main():
 
     ensure_tool()
     orig = os.path.join(paths.ASAR_WORK, "orig")
-    ru = os.path.join(paths.ASAR_WORK, "ru")
+    work = os.path.join(paths.ASAR_WORK, "work")
     check = os.path.join(paths.ASAR_WORK, "check")
-    packed = os.path.join(paths.ASAR_WORK, "app-ru.asar")
+    packed = os.path.join(paths.ASAR_WORK, "app-%s.asar" % profile["code"])
 
     common.log("\n== распаковка app.asar")
     clean_dir(orig)
     asar_call("extract", paths.app_asar(), orig)
     common.log("  файлов: %d" % sum(len(files) for _, _, files in os.walk(orig)))
 
-    common.log("\n== применение русских строк")
-    clean_dir(ru)
-    shutil.copytree(orig, ru, dirs_exist_ok=True)
-    missed = apply_patches(ru)
+    common.log("\n== применение строк языка")
+    clean_dir(work)
+    shutil.copytree(orig, work, dirs_exist_ok=True)
+    missed = apply_patches(work, patches)
     if missed:
         common.log("\nНЕ НАЙДЕНЫ ЯКОРЯ:")
         for name, tag, count in missed:
@@ -223,29 +222,29 @@ def main():
         raise SystemExit("Патч не применён: изменилась версия или сборка.")
 
     common.log("\n== проверка")
-    check_syntax(ru)
-    if not verify(ru):
+    check_syntax(work)
+    if not verify(work, patches):
         raise SystemExit("Проверка маркеров не прошла.")
 
-    common.log("\n== сборка app-ru.asar")
+    common.log("\n== сборка %s" % os.path.basename(packed))
     if os.path.exists(packed):
         os.remove(packed)
-    asar_call("pack", ru, packed)
+    asar_call("pack", work, packed)
     common.log("  размер: %d байт" % os.path.getsize(packed))
 
     # Проверяем уже собранный архив, а не рабочую копию.
     clean_dir(check)
     asar_call("extract", packed, check)
     common.log("\n== проверка собранного архива")
-    if not verify(check):
+    if not verify(check, patches):
         raise SystemExit("Собранный app.asar не прошёл проверку.")
 
     if args.install:
         install(packed)
-        common.log("\nГотово. Запустите Reasonix Studio и выберите русский язык.")
+        common.log("\nГотово. Запустите Reasonix Studio и выберите нужный язык.")
     else:
         common.log("\nСобранный архив: %s" % packed)
-        common.log("Установка не выполнялась. Чтобы применить: py scripts/patch_asar_ru.py --install")
+        common.log("Установка не выполнялась. Чтобы применить: py scripts/patch_asar.py --lang %s --install" % profile["code"])
         common.log("Перед установкой полностью закройте Reasonix Studio.")
 
 

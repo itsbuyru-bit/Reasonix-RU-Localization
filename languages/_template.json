@@ -1,0 +1,189 @@
+{
+ "code": "xx",
+ "display": "Your language",
+ "global": "__XX",
+ "dictionary": "translations/xx.json",
+ "overrides": "translations/xx_overrides.json",
+ "target_language": "Your language",
+ "glossary": "",
+ "native": {
+  "uilang": {
+   "checker": "isXx"
+  },
+  "starting": {
+   "title": "Reasonix Studio is starting",
+   "note": "Waiting for the local service to be ready. This window will close automatically."
+  },
+  "edit_menu": {
+   "edit": "Edit",
+   "undo": "Undo",
+   "redo": "Redo",
+   "cut": "Cut",
+   "copy": "Copy",
+   "paste": "Paste",
+   "selectAll": "Select All",
+   "pasteAndMatchStyle": "Paste and Match Style",
+   "delete": "Delete",
+   "substitutions": "Substitutions",
+   "showSubstitutions": "Show Substitutions",
+   "smartQuotes": "Smart Quotes",
+   "smartDashes": "Smart Dashes",
+   "textReplacement": "Text Replacement",
+   "speech": "Speech",
+   "startSpeaking": "Start Speaking",
+   "stopSpeaking": "Stop Speaking"
+  },
+  "hostexit": {
+   "message": "The kernel exited unexpectedly last time",
+   "ok": "OK",
+   "detail": "The kernel process stopped partway through the last session ({how}). Your sessions are not affected. When reporting a problem, attach shell.log, host.log and the crash folder from:\n\n{logsDir}"
+  },
+  "shelllog": {
+   "title": "Reasonix Studio could not start",
+   "detail": "{body}\n\nLogs are in:\n{logDir}",
+   "hints": {
+    "timeout": "The kernel started but did not finish starting in time. Security software scanning a new or updated install is a common cause; starting Studio again usually works.",
+    "exited": "The kernel process stopped before it was ready. Anything it printed is above; host.log has the rest.",
+    "spawn": "The kernel program could not be run. Security software blocking or locking it is a common cause."
+   }
+  },
+  "packagegrants": {
+   "title": "Reasonix Studio could not open its window",
+   "detail_before": "Files Reasonix Studio loads carry access entries granting a specific Windows app package (AppContainer), and Chromium's sandboxed processes exit while loading such a file. Studio tried to remove them and was refused for:\n\n",
+   "detail_more": "\n…and {more} more",
+   "detail_after": "\n\nRun Reasonix Studio once as administrator and it will remove them itself."
+  },
+  "legacy": {
+   "buttons": [
+    "Move to Trash",
+    "Keep"
+   ],
+   "message": "An older Reasonix Studio was found",
+   "detail": "{bundle}\n\nIt shares the same data as the current one, so both icons open the same window. Moving it to the Trash will not touch your sessions or settings."
+  },
+  "tray": {
+   "open": "Open Reasonix Studio",
+   "closeToTray": "Close to tray",
+   "quit": "Quit Reasonix",
+   "idle": "Nothing running",
+   "attention": "{n} waiting",
+   "working": "{n} working",
+   "jobs": "{n} background jobs"
+  }
+ },
+ "push": {
+  "approval": [
+   "An action needs your approval",
+   "Reasonix on your computer is waiting for you."
+  ],
+  "input": [
+   "The model is waiting for your answer",
+   "Reasonix on your computer needs an answer to go on."
+  ],
+  "error": [
+   "A turn ended with an error",
+   "A turn on your computer did not finish."
+  ],
+  "other": [
+   "Reasonix",
+   "Something on your computer is waiting for you."
+  ]
+ },
+ "native_patches": [
+  {
+   "file": "uilang.js",
+   "reps": [
+    [
+     "lang",
+     "  if (want === \"zh\" || want === \"en\") return want;\n  return isChinese(machineLocale) ? \"zh\" : \"en\";",
+     "  if (want === \"zh\" || want === \"en\" || want === \"xx\") return want;\n  if (isXx(machineLocale)) return \"xx\";\n  return isChinese(machineLocale) ? \"zh\" : \"en\";"
+    ],
+    [
+     "checker",
+     "module.exports = { uiLanguage };",
+     "function isXx(tag) {\n  return String(tag ?? \"\").toLowerCase().startsWith(\"xx\");\n}\n\nmodule.exports = { uiLanguage };"
+    ]
+   ]
+  },
+  {
+   "file": "starting.js",
+   "reps": [
+    [
+     "text",
+     "  en: [\"Reasonix Studio is starting\", \"Waiting for the local service to be ready. This window will close automatically.\"],",
+     "  en: [\"Reasonix Studio is starting\", \"Waiting for the local service to be ready. This window will close automatically.\"],\n  \"xx\": [\"Reasonix Studio is starting\", \"Waiting for the local service to be ready. This window will close automatically.\"],"
+    ],
+    [
+     "pick",
+     "  const [title, note] = String(locale).toLowerCase().startsWith(\"zh\") ? TEXT.zh : TEXT.en;",
+     "  const loc = String(locale).toLowerCase();\n  const [title, note] = loc.startsWith(\"zh\") ? TEXT.zh : loc.startsWith(\"xx\") ? TEXT[\"xx\"] : TEXT.en;"
+    ]
+   ]
+  },
+  {
+   "file": "editmenu.js",
+   "reps": [
+    [
+     "edit-block",
+     "  en: {\n    edit: \"Edit\",",
+     "  \"xx\": {\n    edit: \"Edit\",\n    undo: \"Undo\",\n    redo: \"Redo\",\n    cut: \"Cut\",\n    copy: \"Copy\",\n    paste: \"Paste\",\n    selectAll: \"Select All\",\n    pasteAndMatchStyle: \"Paste and Match Style\",\n    delete: \"Delete\",\n    substitutions: \"Substitutions\",\n    showSubstitutions: \"Show Substitutions\",\n    smartQuotes: \"Smart Quotes\",\n    smartDashes: \"Smart Dashes\",\n    textReplacement: \"Text Replacement\",\n    speech: \"Speech\",\n    startSpeaking: \"Start Speaking\",\n    stopSpeaking: \"Stop Speaking\",\n  },\n  en: {\n    edit: \"Edit\","
+    ]
+   ]
+  },
+  {
+   "file": "hostexit.js",
+   "reps": [
+    [
+     "ru",
+     "  return {\n    message: \"The kernel exited unexpectedly last time\",",
+     "  if (String(locale).toLowerCase().startsWith(\"xx\")) {\n    return {\n      message: \"The kernel exited unexpectedly last time\",\n      ok: \"OK\",\n      detail: `The kernel process stopped partway through the last session (${how}). Your sessions are not affected. When reporting a problem, attach shell.log, host.log and the crash folder from:\\n\\n${logsDir}`,\n    };\n  }\n  return {\n    message: \"The kernel exited unexpectedly last time\","
+    ]
+   ]
+  },
+  {
+   "file": "shelllog.js",
+   "reps": [
+    [
+     "hints",
+     "const HINTS = {\n  timeout: [\n    \"The kernel started but did not finish starting in time. Security software scanning a new or updated install is a common cause; starting Studio again usually works.\",\n    \"内核已启动，但没有在限定时间内完成启动。安全软件扫描新安装或刚更新的程序是常见原因；再次启动通常可以。\",\n  ],\n  exited: [\n    \"The kernel process stopped before it was ready. Anything it printed is above; host.log has the rest.\",\n    \"内核进程在就绪前就停止了。它输出过的内容在上面，host.log 里有更多。\",\n  ],\n  spawn: [\n    \"The kernel program could not be run. Security software blocking or locking it is a common cause.\",\n    \"无法运行内核程序。安全软件拦截或占用它是常见原因。\",\n  ],\n};",
+     "const HINTS = {\n  timeout: [\n    \"The kernel started but did not finish starting in time. Security software scanning a new or updated install is a common cause; starting Studio again usually works.\",\n    \"内核已启动，但没有在限定时间内完成启动。安全软件扫描新安装或刚更新的程序是常见原因；再次启动通常可以。\",\n    \"The kernel started but did not finish starting in time. Security software scanning a new or updated install is a common cause; starting Studio again usually works.\",\n  ],\n  exited: [\n    \"The kernel process stopped before it was ready. Anything it printed is above; host.log has the rest.\",\n    \"内核进程在就绪前就停止了。它输出过的内容在上面，host.log 里有更多。\",\n    \"The kernel process stopped before it was ready. Anything it printed is above; host.log has the rest.\",\n  ],\n  spawn: [\n    \"The kernel program could not be run. Security software blocking or locking it is a common cause.\",\n    \"无法运行内核程序。安全软件拦截或占用它是常见原因。\",\n    \"The kernel program could not be run. Security software blocking or locking it is a common cause.\",\n  ],\n};"
+    ],
+    [
+     "pick",
+     "  const zh = String(locale).toLowerCase().startsWith(\"zh\");\n  const hint = HINTS[code]?.[zh ? 1 : 0];\n  const body = hint ? `${reason}\\n\\n${hint}` : reason;\n  if (zh) {\n    return { title: \"Reasonix Studio 无法启动\", detail: `${body}\\n\\n日志位于：\\n${logDir}` };\n  }",
+     "  const loc = String(locale).toLowerCase();\n  const zh = loc.startsWith(\"zh\");\n  const target = loc.startsWith(\"xx\");\n  const hint = HINTS[code]?.[zh ? 1 : target ? 2 : 0];\n  const body = hint ? `${reason}\\n\\n${hint}` : reason;\n  if (zh) {\n    return { title: \"Reasonix Studio 无法启动\", detail: `${body}\\n\\n日志位于：\\n${logDir}` };\n  }\n  if (target) {\n    return { title: \"Reasonix Studio could not start\", detail: `${body}\\n\\nLogs are in:\\n${logDir}` };\n  }"
+    ]
+   ]
+  },
+  {
+   "file": "packagegrants.js",
+   "reps": [
+    [
+     "ru",
+     "  return {\n    title: \"Reasonix Studio could not open its window\",",
+     "  if (String(locale).toLowerCase().startsWith(\"xx\")) {\n    return {\n      title: \"Reasonix Studio could not open its window\",\n      detail:\n        \"Files Reasonix Studio loads carry access entries granting a specific Windows app package (AppContainer), and Chromium's sandboxed processes exit while loading such a file. Studio tried to remove them and was refused for:\\n\\n\" +\n        shown + (more > 0 ? `\\n…and ${more} more` : \"\") +\n        \"\\n\\nRun Reasonix Studio once as administrator and it will remove them itself.\",\n    };\n  }\n  return {\n    title: \"Reasonix Studio could not open its window\","
+    ]
+   ]
+  },
+  {
+   "file": "main.js",
+   "reps": [
+    [
+     "legacy",
+     "        buttons: [\"移到废纸篓\", \"先留着\"],\n        defaultId: 0,\n        cancelId: 1,\n        message: \"找到一个旧版本的 Reasonix Studio\",\n        detail: `${bundle}\\n\\n它和当前这个共用同一份数据，所以两个图标打开的是同一个窗口。移到废纸篓不会动你的会话和设置。`,",
+     "        buttons: String(app.getLocale()).toLowerCase().startsWith(\"xx\") ? [\"Move to Trash\", \"Keep\"] : [\"移到废纸篓\", \"先留着\"],\n        defaultId: 0,\n        cancelId: 1,\n        message: String(app.getLocale()).toLowerCase().startsWith(\"xx\") ? \"An older Reasonix Studio was found\" : \"找到一个旧版本的 Reasonix Studio\",\n        detail: String(app.getLocale()).toLowerCase().startsWith(\"xx\") ? `${bundle}\\n\\nIt shares the same data as the current one, so both icons open the same window. Moving it to the Trash will not touch your sessions or settings.` : `${bundle}\\n\\n它和当前这个共用同一份数据，所以两个图标打开的是同一个窗口。移到废纸篓不会动你的会话和设置。`,"
+    ]
+   ]
+  },
+  {
+   "file": "tray.js",
+   "reps": [
+    [
+     "ru-labels",
+     "    const line = state.fold?.line ?? \"\";\n    const words = state.fold?.labels ?? {};",
+     "    const fold = state.fold ?? {};\n    const bits = [];\n    if (fold.attention > 0) bits.push(`${fold.attention} waiting`);\n    if (fold.working > 0) bits.push(`${fold.working} working`);\n    if (fold.jobs > 0) bits.push(`${fold.jobs} background jobs`);\n    const line = bits.length ? bits.join(\" · \") : \"Nothing running\";\n    const words = {\n      open: \"Open Reasonix Studio\",\n      closeToTray: \"Close to tray\",\n      quit: \"Quit Reasonix\",\n    };"
+    ]
+   ]
+  }
+ ]
+}

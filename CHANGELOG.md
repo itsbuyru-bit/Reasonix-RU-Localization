@@ -4,6 +4,43 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] — 2026-10-27
+
+### Added
+
+- Language-profile architecture. A language is now a profile in
+  `languages/<code>.json` plus a dictionary in `translations/<code>.json`.
+  `inject.py`, `patch_asar.py`, `translate_api.py`, `merge_parts.py`,
+  `verify_web.py` and `menu.py` accept `--lang`.
+- Chinese → English template for new languages: `translations/_template.json`
+  with 5,201 keys, plus `languages/_template.json` with English native and push
+  strings.
+- `build_native_patches.py`: builds native Electron JS blocks from the simple
+  `native` fields of a profile, so a new language does not need Python changes.
+- Generic `inject.py` and `patch_asar.py`; `inject_ru.py` and
+  `patch_asar_ru.py` remain compatible Russian wrappers.
+- `LOCALIZE.bat` for language packs; `LOCALIZE-RU.bat` remains the Russian
+  default.
+- `docs/ADDING-A-LANGUAGE.md` with the full workflow.
+
+### Changed
+
+- Russian native strings, push texts and glossary moved into
+  `languages/ru.json`. `native_patches` are profile data.
+- `native_strings.py` loads patches from the profile; `verify_web.py` checks
+  dynamic Settings/index/push markers.
+- Menu reads the dictionary path and display name from the selected profile
+  and passes `--lang` to every script.
+
+### Verified
+
+- 38 unit tests, including profile and template tests.
+- `verify_web.py --lang ru` and `--lang _template`.
+- Native template build on a pristine 2.47.1 `app.asar` (11/11 markers,
+  `node --check` on eight files).
+
+---
+
 ## [1.3.2] — 2026-10-27
 
 ### Changed
