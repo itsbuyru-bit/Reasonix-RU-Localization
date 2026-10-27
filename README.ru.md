@@ -274,6 +274,10 @@ Chromium (`Cache`, `Code Cache`, `GPUCache` и подобные). Настрой
 Старые `inject_ru.py`, `patch_asar_ru.py` и `LOCALIZE-RU.bat` остаются
 русскими значениями по умолчанию для совместимости.
 
+ИИ-агентам, работающим с репозиторием, следует загрузить
+`.agents/skills/reasonix-ru-localization/SKILL.md`: там безопасные сценарии,
+матрица проверок и запреты.
+
 ## Ручные команды
 
 ```bat
