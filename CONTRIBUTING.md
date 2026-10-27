@@ -38,7 +38,7 @@ from logs and screenshots before posting. Do not paste the contents of
 ## Fixing a translation
 
 Open a [translation issue](https://github.com/itsbuyru-bit/Reasonix-RU-Localization/issues/new?template=translation.yml)
-or edit `translations/ru_overrides.json` directly and open a pull request.
+or edit `locale/ru-RU.overrides.json` directly and open a pull request.
 Include:
 
 - the screen where the string appears;
@@ -47,13 +47,13 @@ Include:
 - the suggested Russian text;
 - confirmation that every `{placeholder}` is preserved.
 
-For a one-off correction, add the key to `translations/ru_overrides.json`, then:
+For a one-off correction, add the key to `locale/ru-RU.overrides.json`, then:
 
 ```bat
-py scripts\merge_parts.py --write
+py scripts\merge_parts.py --lang ru-RU --write
 ```
 
-Do not edit `translations/ru.json` by hand for a single fix: it is regenerated
+Do not edit `locale/ru-RU.json` by hand for a single fix: it is regenerated
 from `work/ru_parts/` plus overrides.
 
 ## Development setup
@@ -111,6 +111,82 @@ A pull request should:
 - update `README.md` / `README.ru.md` and `CHANGELOG.md` when behavior changes;
 - include screenshots for visible UI changes;
 - pass `python -m unittest discover -s tests` and the Node syntax checks.
+
+## Submit a translation as a pull request
+
+### New language
+
+1. Fork the repository and create a branch:
+
+   ```bat
+   gh repo fork itsbuyru-bit/Reasonix-RU-Localization --clone
+   cd Reasonix-RU-Localization
+   git switch -c translation/de-DE
+   ```
+
+2. Copy the templates and set the BCP 47 profile:
+
+   ```bat
+   copy languages\_template.json languages\de-DE.json
+   copy locale\_template.json locale\de-DE.json
+   copy locale\_template.overrides.json locale\de-DE.overrides.json
+   ```
+
+   Set `code`, `base`, `aliases`, `display`, `global`, `dictionary`,
+   `target_language` and `glossary`; translate `native` and `push`; then run
+   `py scripts\build_native_patches.py --lang de-DE`.
+
+3. Translate `locale\de-DE.json` (keep the Chinese keys and `{placeholders}`).
+
+4. Validate and test:
+
+   ```bat
+   py scripts\validate_language_pack.py --lang de-DE
+   py scripts\check_docs.py
+   python -m unittest discover -s tests
+   ```
+
+5. Commit, push and open the PR:
+
+   ```bat
+   git add languages\de-DE.json locale\de-DE.json locale\de-DE.overrides.json
+   git commit -m "translation: add German (de-DE)"
+   git push -u origin translation/de-DE
+   gh pr create --base main --head <your-user>:translation/de-DE ^
+     --title "translation: add German (de-DE)" ^
+     --body "Adds the BCP 47 de-DE language pack. Validator and docs checks pass."
+   ```
+
+   Add the `translation` label in the GitHub UI (or with
+   `gh pr edit <number> --add-label translation`).
+
+6. CI runs `Tests (Windows)`, including the language-pack validator and docs
+   check. A maintainer reviews the pack and may add the `automerge` label.
+   Auto-merge then waits for the required check; it never bypasses CI or branch
+   protection.
+
+### Fix an existing Russian string
+
+1. Add the source key and the corrected value to
+   `locale/ru-RU.overrides.json`.
+2. Regenerate the dictionary:
+
+   ```bat
+   py scripts\merge_parts.py --lang ru-RU --write
+   ```
+
+3. Validate:
+
+   ```bat
+   py scripts\validate_language_pack.py --lang ru-RU
+   py scripts\check_docs.py
+   python -m unittest discover -s tests
+   ```
+
+4. Commit and open a PR with the `translation` label.
+
+Do not edit `locale/ru-RU.json` by hand for a single correction: it is regenerated
+from parts plus overrides.
 
 ## Updating anchors for a new Reasonix version
 
