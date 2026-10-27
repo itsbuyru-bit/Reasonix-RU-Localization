@@ -287,6 +287,10 @@ Full guide: [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md).
 The old `inject_ru.py`, `patch_asar_ru.py` and `LOCALIZE-RU.bat` remain Russian
 defaults for backward compatibility.
 
+AI agents working in this repository should load
+`.agents/skills/reasonix-ru-localization/SKILL.md`; it contains the safe
+workflows, validation matrix and non-destructive rules.
+
 ## Manual commands
 
 ```bat
